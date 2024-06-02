@@ -13,7 +13,7 @@
 /* Fonts */
 :root {
   --default-font: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --heading-font: "Jost", sans-serif;
+  --heading-font: "Jost", Open Sans;
   --nav-font: "Poppins", sans-serif;
 }
 
@@ -26,10 +26,10 @@
   --default-color: #444444;
 
   /* Heading Color - This color is used for titles, headings and secondary elements. */
-  --heading-color: #37517e;
+  --heading-color: #00690e;
 
   /* Accent Color - This is the main accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out. */
-  --accent-color: #47b2e4;
+  --accent-color: #006015;
 
   /* Contrast Color - This is a color used for text when the background color is one of the heading, accent, or default colors. Its purpose is to ensure proper contrast and readability when placed over these more dominant colors. */
   --contrast-color: #ffffff;
@@ -38,24 +38,24 @@
 /* Nav Menu Colors */
 :root {
   /* Nav Color - This is the default color of the main navmenu links. */
-  --nav-color: #ffffff;
+  --nav-color: #006015;
 
   /* Nav Hover Color - This color is applied to main navmenu links when they are hovered over. */
-  --nav-hover-color: #47b2e4;
+  --nav-hover-color: #006015;
 
   /* Nav Dropdown Background Color - This color is used as the background for dropdown boxes that appear when hovering over primary navigation items. */
-  --nav-dropdown-background-color: #ffffff;
+  --nav-dropdown-background-color: #006015;
 
   /* Nav Dropdown Color - This color is used for navigation links of the dropdown items in the navigation menu. */
-  --nav-dropdown-color: #444444;
+  --nav-dropdown-color: #ffffff;
 
   /* Nav Dropdown Hover Color - Similar to --nav-hover-color, this color is applied to dropdown navigation links when they are hovered over. */
-  --nav-dropdown-hover-color: #47b2e4;
+  --nav-dropdown-hover-color: #ffffff;
 }
 
 /* Template Custom Colors */
 :root {
-  --hero-background-color: #37517e;
+  --hero-background-color: #006015;
   --hero-color: #ffffff;
 }
 
@@ -74,8 +74,8 @@ body {
 }
 
 a {
-  color: var(--accent-color);
-  text-decoration: none;
+  color: #006015;
+  text-decoration:none;
   transition: 0.3s;
 }
 
@@ -98,36 +98,36 @@ h6 {
 # Global Header
 --------------------------------------------------------------*/
 .header {
-  --background-color: #3d4d6a;
-  --heading-color: #ffffff;
+  --background-color: #ffffff;
+  --heading-color: #006015;
   color: var(--default-color);
-  background-color: var(--background-color);
-  padding: 15px 0;
+  background-color: #ffffff;
+  padding: 6px 0;
   transition: all 0.5s;
   z-index: 997;
 }
 
 .header .logo {
-  line-height: 1;
+  line-height: 0;
 }
 
 .header .logo img {
-  max-height: 36px;
+  max-height: 50px;
   margin-right: 8px;
 }
 
 .header .logo h1 {
-  font-size: 30px;
+  font-size: 20px;
   margin: 0;
   font-weight: 500;
   color: var(--heading-color);
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 
 .header .btn-getstarted,
 .header .btn-getstarted:focus {
-  color: var(--contrast-color);
+  color: #ffffff;
   background: var(--accent-color);
   font-size: 14px;
   padding: 8px 25px;
@@ -162,14 +162,14 @@ h6 {
 ------------------------------*/
 .index-page .header {
   --background-color: rgba(255, 255, 255, 0);
-  --heading-color: #ffffff;
-  --nav-color: #ffffff;
+  --heading-color: #006015;
+  --nav-color: #006015;
 }
 
 /* Index Page Header on Scroll
 ------------------------------*/
 .index-page.scrolled .header {
-  --background-color: rgba(40, 58, 90, 0.9);
+  --background-color: rgba(40, 90, 40, 0.9);
 }
 
 /*--------------------------------------------------------------
@@ -880,9 +880,9 @@ section,
 }
 
 .hero .btn-get-started {
-  color: var(--contrast-color);
-  background: var(--accent-color);
-  font-family: var(--heading-font);
+  color: var(--nav-color);
+  background: #ffffff;
+  font-family: var(--hero-color);
   font-weight: 500;
   font-size: 15px;
   letter-spacing: 1px;
@@ -893,7 +893,7 @@ section,
 }
 
 .hero .btn-get-started:hover {
-  color: var(--contrast-color);
+  color: #ffffff;
   background: color-mix(in srgb, var(--accent-color), transparent 15%);
 }
 
@@ -1545,13 +1545,12 @@ section,
 # Pricing Section
 --------------------------------------------------------------*/
 .pricing {
-  --background-color: color-mix(in srgb, var(--heading-color), transparent 95%);
+  --background-color: color-mix(in srgb, var(--heading-color), transparent 90%);
 }
 
 .pricing .pricing-item {
-  background-color: var(--contrast-color);
+  background-color: #006015;
   box-shadow: 0 3px 20px -2px color-mix(in srgb, var(--default-color), transparent 90%);
-  border-top: 4px solid var(--background-color);
   padding: 60px 40px;
   height: 100%;
   border-radius: 5px;
