@@ -17,29 +17,32 @@
       <div class="card">
         <div class="card-body register-card-body">
           <p class="register-box-msg">Register a new membership</p>
-
-          <form action="{{route('login')}}" method="POST">
+          <form method="post" action="{{route('register.store')}}" >
+          @csrf
             <div class="input-group mb-3">
-              <input type="text" class="form-control" placeholder="Full Name" />
+              <input type="text" class="form-control" placeholder="Name" id="name" name="name"/>
               <div class="input-group-text">
                 <span class="bi bi-person"></span>
               </div>
             </div>
             <div class="input-group mb-3">
-              <input type="email" class="form-control" placeholder="Email" />
+              <input type="email" id="email" name="email" class="form-control" placeholder="Email"  @error('email') is invalid @enderror/>
               <div class="input-group-text">
                 <span class="bi bi-envelope"></span>
               </div>
+              @error('email')
+                <small class="btn-btn danger">{{$message}}</small>
+              @enderror
             </div>
             <div class="input-group mb-3">
               <input
-                type="password"
-                class="form-control"
-                placeholder="Password"
-              />
+                type="password" id="password" name="password" class="form-control" placeholder="Password" @error('password') is invalid @enderror/>
               <div class="input-group-text">
                 <span class="bi bi-lock-fill"></span>
               </div>
+              @error('password')
+                <small class="btn-btn danger">{{$message}}</small>
+              @enderror
             </div>
             <!--begin::Row-->
             <div class="row">
@@ -52,21 +55,20 @@
                     id="flexCheckDefault"
                   />
                   <label class="form-check-label" for="flexCheckDefault">
-                    I agree to the <a href="#">terms</a>
+                    I agree to the term
                   </label>
                 </div>
               </div>
               <!-- /.col -->
               <div class="col-4">
                 <div class="d-grid gap-2">
-                  <button type="submit" class="btn btn-primary">Sign In</button>
+                  <button class="btn btn-primary">Sign Up</button>
                 </div>
               </div>
               <!-- /.col -->
             </div>
             <!--end::Row-->
           </form>
-          @csrf
           <div class="social-auth-links text-center mb-3 d-grid gap-2">
             <p>- OR -</p>
             <a href="#" class="btn btn-primary">
@@ -79,7 +81,7 @@
           <!-- /.social-auth-links -->
 
           <p class="mb-0">
-            <a href="login.html" class="text-center">
+            <a href="{{route('login')}}" class="text-center">
               I already have a membership
             </a>
           </p>

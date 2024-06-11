@@ -8,13 +8,20 @@
         <div class="card">
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
-                <form action="{{route('/dashboard')}}" method="POST">
+                <form action="{{route('login')}}" method="POST">
                 @csrf
-                    <div class="input-group mb-3"> <input type="email" class="form-control" placeholder="Email">
-                        <div class="input-group-text"> <span class="bi bi-envelope"></span> </div>
+                    <div class="input-group mb-3"> <input type="email"  name="email" id="email" class="form-control" placeholder="Email"@error('email') is invalid @enderror>
+                        <div class="input-group-text"> <span class="bi bi-envelope"></span> 
+                        @error('email')
+                <small class="btn-btn danger">{{$message}}</small>
+              @enderror
                     </div>
-                    <div class="input-group mb-3"> <input type="password" class="form-control" placeholder="Password">
+                    </div>
+                    <div class="input-group mb-3"> <input type="password" id="password" name="password" class="form-control" placeholder="Password" @error('password') is invalid @enderror>
                         <div class="input-group-text"> <span class="bi bi-lock-fill"></span> </div>
+                        @error('password')
+                <small class="btn-btn danger">{{$message}}</small>
+              @enderror
                     </div> <!--begin::Row-->
                     <div class="row">
                         <div class="col-8">

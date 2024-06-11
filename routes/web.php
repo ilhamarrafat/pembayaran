@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\dashboardController;
+use App\Http\Controllers\LoginController;
+use Illuminate\Auth\Events\Login;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,13 +20,9 @@ use App\Http\Controllers\AuthController;
 Route::get('/', function () {
     return view('tampilan.master');
 });
-Route::prefix('/')->group(function(){
-    Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/dashboard', function () {
-        return 'You are logged in!';
-    })->middleware('auth');
-});
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/register', [AuthController::class, 'store'])->name('register.store');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/dashboard', function () {return view('dashboard.dashboard');})->middleware('auth')->name('dashboard');
