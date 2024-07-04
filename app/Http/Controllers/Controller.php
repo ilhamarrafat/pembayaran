@@ -10,3 +10,10 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 }
+class UserController extends Controller
+{
+    public function index()
+    {
+        return view('tampilan.master');
+    }
+}

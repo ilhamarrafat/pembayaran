@@ -18,18 +18,20 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $this->validate($request, [
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-
-        if (Auth::attempt($request->only('email', 'password'))) {
-            return redirect()->intended('/dashboard');
-        }
-
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+         $request->validate([
+            'email' => 'required',
+            'password' => 'required'
+        ],[
+            'email.required' => 'Email belum dimasukkan',
+            'password.required'=>'Password belum dimasukkan'
+        ]
+    );
+    if (Auth::attempt($request->only('email', 'password'))) {
+        return redirect()->intended('/dashboard');
+    }
+    else{
+        return redirect('')->withErrors('email dan password tidak sesuai!')->withInput();
+    }
     }
 
     public function logout(Request $request): RedirectResponse

@@ -8,90 +8,74 @@
   </head>
   <!--end::Head-->
   <!--begin::Body-->
-  <body class="register-page bg-body-secondary">
-    <div class="register-box">
-      <div class="register-logo">
-        <a href=""><b>Regristrasi</b></a>
-      </div>
-      <!-- /.register-logo -->
-      <div class="card">
-        <div class="card-body register-card-body">
-          <p class="register-box-msg">Register a new membership</p>
-          <form method="post" action="{{route('register.store')}}" >
-          @csrf
-            <div class="input-group mb-3">
-              <input type="text" class="form-control" placeholder="Name" id="name" name="name"/>
-              <div class="input-group-text">
-                <span class="bi bi-person"></span>
-              </div>
-            </div>
-            <div class="input-group mb-3">
-              <input type="email" id="email" name="email" class="form-control" placeholder="Email"  @error('email') is invalid @enderror/>
-              <div class="input-group-text">
-                <span class="bi bi-envelope"></span>
-              </div>
-              @error('email')
+  <body>
+	<section class="h-100">
+		<div class="container h-100">
+			<div class="row justify-content-sm-center h-100">
+				<div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
+					<div class="text-center my-5">
+						<img src="{{asset('template/assets/img/logo.png')}}" alt="logo" width="100">
+					</div>
+					<div class="card shadow-lg">
+						<div class="card-body p-5">
+							<h1 class="fs-4 card-title fw-bold mb-4">Register</h1>
+							<form method="POST" action="{{route('register')}}" class="needs-validation" novalidate="" autocomplete="off">
+							@csrf	
+              <div class="mb-3">
+									<label class="mb-2 text-muted" for="name">Name</label>
+									<input id="name" type="text" class="form-control" name="name" value="" required autofocus>
+									<div class="invalid-feedback">
+										Name diperlukan
+									</div>
+								</div>
+
+								<div class="mb-3">
+									<label class="mb-2 text-muted" for="email">E-Mail Address</label>
+									<input id="email" type="email" class="form-control" name="email" value="" required @error('email') is invalid @enderror>
+									<div class="invalid-feedback">
+										Email diperlukan
+									</div>
+                  @error('email')
                 <small class="btn-btn danger">{{$message}}</small>
               @enderror
-            </div>
-            <div class="input-group mb-3">
-              <input
-                type="password" id="password" name="password" class="form-control" placeholder="Password" @error('password') is invalid @enderror/>
-              <div class="input-group-text">
-                <span class="bi bi-lock-fill"></span>
-              </div>
-              @error('password')
+								</div>
+
+								<div class="mb-3">
+									<label class="mb-2 text-muted" for="password">Password</label>
+									<input id="password" type="password" class="form-control" name="password" required @error('password') is invalid @enderror>
+								    <div class="invalid-feedback">
+								    	Password diperlukan
+							    	</div>
+                    @error('password')
                 <small class="btn-btn danger">{{$message}}</small>
               @enderror
-            </div>
-            <!--begin::Row-->
-            <div class="row">
-              <div class="col-8">
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                  <label class="form-check-label" for="flexCheckDefault">
-                    I agree to the term
-                  </label>
-                </div>
-              </div>
-              <!-- /.col -->
-              <div class="col-4">
-                <div class="d-grid gap-2">
-                  <button class="btn btn-primary">Sign Up</button>
-                </div>
-              </div>
-              <!-- /.col -->
-            </div>
-            <!--end::Row-->
-          </form>
-          <div class="social-auth-links text-center mb-3 d-grid gap-2">
-            <p>- OR -</p>
-            <a href="#" class="btn btn-primary">
-              <i class="bi bi-facebook me-2"></i> Sign in using Facebook
-            </a>
-            <a href="#" class="btn btn-danger">
-              <i class="bi bi-google me-2"></i> Sign in using Google+
-            </a>
-          </div>
-          <!-- /.social-auth-links -->
+								</div>
 
-          <p class="mb-0">
-            <a href="{{route('login')}}" class="text-center">
-              I already have a membership
-            </a>
-          </p>
-        </div>
-        <!-- /.register-card-body -->
-      </div>
-    </div>
-    <!-- /.register-box -->
+								<p class="form-text text-muted mb-3">
+								Dengan mendaftar, Anda setuju dengan syarat dan ketentuan kami.
+								</p>
+								<div class="align-items-center d-flex">
+									<button 
+                  type="submit" class="btn btn-primary ms-auto">
+										Register	
+									</button>
+								</div>
+							</form>
+						</div>
+						<div class="card-footer py-3 border-0">
+							<div class="text-center">
+								Sudah punya akun? <a href="{{route('login')}}" class="text-dark">Login</a>
+							</div>
+						</div>
+					</div>
+					<div class="text-center mt-5 text-muted">
+						Copyright &copy; 2024 &mdash; ppma
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 
-    <Scripts path={path} />
-    <!--end::Script-->
-  </body><!--end::Body-->
+	<script src="js/login.js"></script>
+</body>
 </html>

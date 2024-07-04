@@ -25,3 +25,4 @@
   <link href="{{asset('template/assets/css/adminlte/adminlte.rtl.css.map')}}" rel="stylesheet">
   <link href="{{asset('template/assets/css/adminlte/adminlte.rtl.min')}}" rel="stylesheet">
   <link href="{{asset('template/assets/css/adminlte/adminlte.rtl.min.css.map')}}" rel="stylesheet">
+  <!--bosstrep 5-->
