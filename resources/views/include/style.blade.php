@@ -17,12 +17,3 @@
 
   <!-- Main CSS File -->
   <link href="{{asset('template/assets/css/main.css')}}" rel="stylesheet">
-  <!--ccs Admin lte-->
-  <link href="{{asset('template/assets/css/adminlte/adminlte.css.map')}}" rel="stylesheet">
-  <link href="{{asset('template/assets/css/adminlte/adminlte.min')}}" rel="stylesheet">
-  <link href="{{asset('template/assets/css/adminlte/adminlte.min.css.map')}}" rel="stylesheet">
-  <link href="{{asset('template/assets/css/adminlte/adminlte.rtl')}}" rel="stylesheet">
-  <link href="{{asset('template/assets/css/adminlte/adminlte.rtl.css.map')}}" rel="stylesheet">
-  <link href="{{asset('template/assets/css/adminlte/adminlte.rtl.min')}}" rel="stylesheet">
-  <link href="{{asset('template/assets/css/adminlte/adminlte.rtl.min.css.map')}}" rel="stylesheet">
-  <!--bosstrep 5-->

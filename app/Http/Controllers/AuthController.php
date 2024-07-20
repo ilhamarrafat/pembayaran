@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use App\Models\User;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function showRegistrationForm()
+    public function Registration()
     {
         return view('auth.register');
     }
@@ -32,7 +33,7 @@ class AuthController extends Controller
         return redirect()->route('login')->with('success', 'Registration successful, please login.');
     }
 
-    public function showLoginForm()
+    public function showlogin()
     {
         return view('auth.login');
     }
@@ -56,14 +57,14 @@ class AuthController extends Controller
 
         if (Auth::attempt($infologin))
          {
-           if(Auth::user()->role=='santri'){
+           if(Auth::user()->role=='Santri'){
             return redirect('/dashboard/santri');
-        } else if (Auth::user()->role=='admin'){
+        } else if (Auth::user()->role=='Admin'){
             return redirect('/dashboard/admin');
-        } else if (Auth::user()->role=='superadmin'){
+        } else if (Auth::user()->role=='Super_Admin'){
             return redirect('/dashboard/superadmin');
         } 
-    }
+        }
         else{
             return redirect('')->withErrors('email dan password salah')->withInput();
         }

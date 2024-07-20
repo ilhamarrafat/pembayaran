@@ -47,7 +47,7 @@
   </div>
 </div>
 
-<div class="container copyright text-center mt-4">
+<div class="container copyright text-center mt-2">
   <p>© <span>Copyright</span> <strong class="px-1 sitename">Admin</strong> <span>All Rights Reserved</span></p>
   <div class="credits">
     Designed by <a>Admin</a>
