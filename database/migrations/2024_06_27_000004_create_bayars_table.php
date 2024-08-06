@@ -19,11 +19,8 @@ return new class extends Migration
             $table->dateTime('Waktu');
             $table->boolean('Status');
             $table->string('no_transaksi', 50);
-            $table->unsignedBigInteger('Id_tagihan');
             $table->timestamps(); // Menambahkan created_at dan updated_at
 
-            // Foreign key
-            $table->foreign('Id_tagihan')->references('Id_tagihan')->on('tagihan')->onDelete('cascade');
         });
     }
 

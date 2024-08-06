@@ -1,0 +1,5 @@
+@include('dadmin.navbar')
+@include('dadmin.sidebar')
+@include('dadmin.body')
+@include('dadmin.style')
+@include('dadmin.script')

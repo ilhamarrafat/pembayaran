@@ -17,8 +17,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password', 20);
             $table->string('foto', 200);
-            $table->unsignedBigInteger('Id_level');
-            $table->foreign('Id_level')->references('id_level')->on('level')->onDelete('cascade');
             $table->timestamps();
         });
     }

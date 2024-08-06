@@ -67,5 +67,6 @@
 			</div>
 		</div>
 	</section>
+	@include('include.script')
 </body>
 </html>

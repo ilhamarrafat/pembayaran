@@ -23,6 +23,6 @@ class Pembayaran extends Model
 
     public function tagihan()
     {
-        return $this->hasMany(tagihan::class, 'Id_tagihan', 'Id_tagihan');
+        return $this->hasMany(tagihan::class);
     }
 }

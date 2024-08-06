@@ -10,10 +10,24 @@ class Santri extends Model
     use HasFactory;
     protected $table = 'Santri';
     protected $primaryKey = 'Id_santri';
-
-    public function level()
+    protected $fillable = [
+        'Id_santri',
+        'user_id',
+        'Id_tagihan',
+        'foto',
+        'nama',
+        'kelas',
+        'Jenis_kelamin',
+        'Tmp_lhr',
+        'Tgl_lhr',
+        'alamat',
+        'Thn_masuk',
+        'Thn_keluar',
+        'tingkat'
+    ];
+    public function user()
     {
-        return $this->belongsTo(level::class, 'Id_level', 'id_level');
+        return $this->belongsTo(User::class);
     }
 
     public function tagihan()

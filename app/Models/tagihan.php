@@ -13,6 +13,6 @@ class tagihan extends Model
 
     public function santri()
     {
-        return $this->hasOne(Santri::class, 'Id_tagihan', 'Id_tagihan');
+        return $this->hasOne(Santri::class, 'Id_tagihan');
     }
 }
