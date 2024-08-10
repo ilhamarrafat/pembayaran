@@ -5,24 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Pembayaran extends Model
+class Bayar extends Model
 {
     use HasFactory;
     protected $table = 'Bayar';
     protected $primaryKey = 'Id_Bayar';
 
     protected $fillable = [
-        'Nominal',
+        'nominal_bayar',
         'Metode',
         'Deskripsi',
-        'Waktu',
-        'Status',
+        'waktu_transaksi',
+        'status_transaksi',
         'no_transaksi',
-        'Id_tagihan'
+        'Id_tagihan',
+        'jenis_transaksi'
     ];
-
     public function tagihan()
     {
-        return $this->hasMany(tagihan::class);
+        return $this->belongsToMany(Tagihan::class, 'bayar')
+            ->withPivot('status_transaksi', 'waktu_transaksi');
     }
 }

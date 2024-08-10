@@ -11,8 +11,18 @@ class Admin extends Model
     use HasFactory;
     protected $table = 'Admin';
     protected $primaryKey = 'id_admin';
-    public function level()
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'nama',
+        'foto',
+        'user_id',
+    ];
+    public function user()
     {
-        return $this->belongsTo(level::class, 'Id_level', 'id_level');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

@@ -32,8 +32,8 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'role_id' => 3, // Tetapkan peran sebagai user
         ]);
-        
-        
+
+
         $santri = Santri::create([
             'user_id' => $user->id,
             'nama' => $request->name,

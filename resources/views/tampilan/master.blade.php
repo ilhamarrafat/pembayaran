@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -7,27 +8,26 @@
   <meta content="" name="description">
   <meta content="" name="keywords">
   {{--css--}}
- @include('include.style')
- {{--endcss--}}
+  @include('include.style')
+  {{--endcss--}}
 </head>
 
 <body class="index-page">
 
-{{--header--}}
-@include('include.header')
-{{--endheader--}}
+  {{--header--}}
+  @include('include.header')
+  {{--endheader--}}
 
   <main class="main">
     <!-- Hero Section -->
-    <section id="hero" class="hero section">
-
+    <section id="home" class="hero section">
       <div class="container">
         <div class="row gy-4">
           <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="zoom-out">
             <h2 class="">Selamat datang di Website</h2>
             <h4 class="">PONDOK PESANTREN MANBA'UL ANWAR</h4>
             <div class="d-flex">
-              <a href="#about" class="btn-get-started">Pembayaran</a>          
+              <a href="home" class="btn-get-started">Pembayaran</a>
               </a>
             </div>
           </div>
@@ -41,52 +41,46 @@
 
     <!-- Clients Section -->
     <section id="clients" class="clients section">
-
       <div class="container" data-aos="zoom-in">
-
-        <div class="swiper">
-          <script type="{{asset('application/json')}}" class="swiper-config">
-            {
-              "loop": true,
-              "speed": 600,
-              "autoplay": {
-                "delay": 5000
+        <script type="{{asset('application/json')}}" class="swiper-config">
+          {
+            "loop": true,
+            "speed": 600,
+            "autoplay": {
+              "delay": 5000
+            },
+            "slidesPerView": "auto",
+            "pagination": {
+              "el": ".swiper-pagination",
+              "type": "bullets",
+              "clickable": true
+            },
+            "breakpoints": {
+              "320": {
+                "slidesPerView": 2,
+                "spaceBetween": 40
               },
-              "slidesPerView": "auto",
-              "pagination": {
-                "el": ".swiper-pagination",
-                "type": "bullets",
-                "clickable": true
+              "480": {
+                "slidesPerView": 3,
+                "spaceBetween": 60
               },
-              "breakpoints": {
-                "320": {
-                  "slidesPerView": 2,
-                  "spaceBetween": 40
-                },
-                "480": {
-                  "slidesPerView": 3,
-                  "spaceBetween": 60
-                },
-                "640": {
-                  "slidesPerView": 4,
-                  "spaceBetween": 80
-                },
-                "992": {
-                  "slidesPerView": 5,
-                  "spaceBetween": 120
-                },
-                "1200": {
-                  "slidesPerView": 6,
-                  "spaceBetween": 120
-                }
+              "640": {
+                "slidesPerView": 4,
+                "spaceBetween": 80
+              },
+              "992": {
+                "slidesPerView": 5,
+                "spaceBetween": 120
+              },
+              "1200": {
+                "slidesPerView": 6,
+                "spaceBetween": 120
               }
             }
-          </script>
-        </div>
-
+          }
+        </script>
       </div>
-
-    </section><!-- /Clients Section -->
+    </section>
     <!-- About Section -->
     <section id="about" class="about section">
 
@@ -106,28 +100,28 @@
           </div>
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
             <h2>Berita Terkini</h2>
-          <table class="table table-dark table-dark">
-            <thead>
-            <img src="" alt="">
-            gambar
-            </thead>
-            <tbody>
-              <tr class="table-active">
-                berita terkini hari ini 
-              </tr>
-            </tbody>
-          </table>
-          <table class="table table-dark table-striped">
-            <thead>
-            <img src="" alt="">
-            gambar
-            </thead>
-            <tbody>
-              <tr class="table-active">
-                berita terkini hari ini 
-              </tr>
-            </tbody>
-          </table>
+            <table class="table table-dark table-dark">
+              <thead>
+                <img src="" alt="">
+                gambar
+              </thead>
+              <tbody>
+                <tr class="table-active">
+                  berita terkini hari ini
+                </tr>
+              </tbody>
+            </table>
+            <table class="table table-dark table-striped">
+              <thead>
+                <img src="" alt="">
+                gambar
+              </thead>
+              <tbody>
+                <tr class="table-active">
+                  berita terkini hari ini
+                </tr>
+              </tbody>
+            </table>
           </div>
 
         </div>
@@ -161,7 +155,7 @@
 
     </section><!-- /Call To Action Section -->
     <!-- Pricing Section -->
-    <section id="pricing" class="pricing section">
+    <section id="kontak" class="pricing section">
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
@@ -171,34 +165,34 @@
       <div class="container">
         <div class="row gy-4">
           <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="100">
-          <div class="card" style="width: 18rem;">
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <a href="#" class="buy-btn">Go somewhere</a>
+            <div class="card" style="width: 18rem;">
+              <img src="..." class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <a href="#" class="buy-btn">Go somewhere</a>
+              </div>
             </div>
-          </div>
           </div><!-- End Pricing Item -->
 
           <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="200">
             <div class="card" style="width: 18rem;">
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <a href="#" class="buy-btn">Go somewhere</a>
-            </div>
+              <img src="..." class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <a href="#" class="buy-btn">Go somewhere</a>
+              </div>
             </div>
           </div><!-- End Pricing Item -->
           <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="300">
-          <div class="card" style="width: 18rem;">
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <a href="#" class="buy-btn">Go somewhere</a>
-            </div>
+            <div class="card" style="width: 18rem;">
+              <img src="..." class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <a href="#" class="buy-btn">Go somewhere</a>
+              </div>
             </div>
           </div><!-- End Pricing Item -->
 
@@ -294,16 +288,16 @@
     </section><!-- /Contact Section -->
 
   </main>
-{{--footer--}}
-@include('include.footer')
-{{--endfooter--}}
+  {{--footer--}}
+  @include('include.footer')
+  {{--endfooter--}}
 
   <!-- Scroll Top -->
   <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
- {{--javacript--}}
- @include('include.script')
- {{--endjavacript--}}
+  {{--javacript--}}
+  @include('include.script')
+  {{--endjavacript--}}
 </body>
 
 </html>

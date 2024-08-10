@@ -13,10 +13,11 @@ class BeritaController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {   $pagination = 5;
+    {
+        $pagination = 5;
         $beritas = Berita::orderBy('created_at', 'desc')->paginate($pagination);
         $i = ($beritas->currentPage() - 1) * $pagination;
-        return view('berita.index',compact('beritas','i'));
+        return view('berita.index', compact('beritas', 'i'));
     }
 
     /**
@@ -24,8 +25,8 @@ class BeritaController extends Controller
      */
     public function create()
     {
-        $berita=Berita::all();
-        return view('berita.create',compact('berita'));
+        $berita = Berita::all();
+        return view('berita.create', compact('berita'));
     }
 
     /**
@@ -33,25 +34,25 @@ class BeritaController extends Controller
      */
     public function store(Request $request)
     {
-        
-        $validasi=$request->validate([
-            'gambar'=> 'required|file|mimes:jpg,png,pdf|max:2048',
-            'judul' =>'required',
+
+        $validasi = $request->validate([
+            'gambar' => 'required|file|mimes:jpg,png,pdf|max:2048',
+            'judul' => 'required',
             'isi' => 'required|file|mimes:jpg,png,pdf|max:2048'
         ]);
-        $gambar=$request->file('gambar');
-        $gambar_ekstensi=$gambar->extension();
-        $nama_gambar=date('YmdHis') . "." . $gambar_ekstensi;
-        $gambar->move(public_path('gambar'),$nama_gambar);
+        $gambar = $request->file('gambar');
+        $gambar_ekstensi = $gambar->extension();
+        $nama_gambar = date('YmdHis') . "." . $gambar_ekstensi;
+        $gambar->move(public_path('gambar'), $nama_gambar);
 
-        $isi=$request->file('isi');
-        $isi_ekstensi=$isi->extension();
-        $nama_isi=date('YmdHis') . "." . $isi_ekstensi;
-        $isi->move(public_path('isi'),$nama_isi);
-        $Data=([
-            'gambar'=>$nama_gambar,
-            'judul'=>$request->input('judul'),
-            'isi'=>$nama_isi
+        $isi = $request->file('isi');
+        $isi_ekstensi = $isi->extension();
+        $nama_isi = date('YmdHis') . "." . $isi_ekstensi;
+        $isi->move(public_path('isi'), $nama_isi);
+        $Data = ([
+            'gambar' => $nama_gambar,
+            'judul' => $request->input('judul'),
+            'isi' => $nama_isi
         ]);
         Berita::create($Data);
         return redirect('/berita')->with('success', 'Berita berhasil ditambahkan.');
@@ -62,9 +63,9 @@ class BeritaController extends Controller
      */
     public function show(string $id)
     {
-        $beritas=Berita::find($id);
+        $beritas = Berita::find($id);
         return redirect()->route('berita', compact('beritas'))
-        ->with('Berita, Berhasil ditambahkan!!');
+            ->with('Berita, Berhasil ditambahkan!!');
     }
 
     /**
@@ -81,26 +82,26 @@ class BeritaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-         $validasi=$request->validate([
-            'gambar'=> 'required|file|mimes:jpg,png,pdf|max:2048',
-            'judul' =>'required',
+        $validasi = $request->validate([
+            'gambar' => 'required|file|mimes:jpg,png,pdf|max:2048',
+            'judul' => 'required',
             'isi' => 'required|file|mimes:jpg,png,pdf|max:2048'
         ]);
-        $gambar=$request->file('gambar');
-        $gambar_ekstensi=$gambar->extension();
-        $nama_gambar=date('YmdHis') . "." . $gambar_ekstensi;
-        $gambar->move(public_path('gambar'),$nama_gambar);
+        $gambar = $request->file('gambar');
+        $gambar_ekstensi = $gambar->extension();
+        $nama_gambar = date('YmdHis') . "." . $gambar_ekstensi;
+        $gambar->move(public_path('gambar'), $nama_gambar);
 
-        $isi=$request->file('isi');
-        $isi_ekstensi=$isi->extension();
-        $nama_isi=date('YmdHis') . "." . $isi_ekstensi;
-        $isi->move(public_path('isi'),$nama_isi);
-        $Data=([
-            'gambar'=>$nama_gambar,
-            'judul'=>$request->input('judul'),
-            'isi'=>$nama_isi
+        $isi = $request->file('isi');
+        $isi_ekstensi = $isi->extension();
+        $nama_isi = date('YmdHis') . "." . $isi_ekstensi;
+        $isi->move(public_path('isi'), $nama_isi);
+        $Data = ([
+            'gambar' => $nama_gambar,
+            'judul' => $request->input('judul'),
+            'isi' => $nama_isi
         ]);
-        $santris = Berita::findOrFail($id);
+        $beritas = Berita::findOrFail($id);
         Berita::update($Data);
         return redirect('/berita')->with('success', 'Berita berhasil ditambahkan.');
     }
@@ -110,9 +111,9 @@ class BeritaController extends Controller
      */
     public function destroy(string $id)
     {
-        $beritas= Berita::findOrFail($id);
+        $beritas = Berita::findOrFail($id);
         $beritas->delete();
         return redirect()->route('berita')
-                        ->with('success', 'Santri deleted successfully.');
+            ->with('success', 'Santri deleted successfully.');
     }
 }
