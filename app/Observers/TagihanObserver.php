@@ -13,7 +13,7 @@ class TagihanObserver
     public function created(Tagihan $tagihan): void
     {
         // Buat data pembayaran baru
-        $bayar = Bayar::create([
+        $bayar = Tagihan::create([
             'nominal_bayar' => $tagihan->nominal_bayar,
             'Id_santri' => $tagihan->Id_santri,
         ]);

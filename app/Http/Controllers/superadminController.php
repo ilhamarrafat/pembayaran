@@ -2,14 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\kelas;
+use App\Models\tingkat;
 use Illuminate\Http\Request;
 use App\Models\Santri;
 use App\Models\tagihan;
 use App\Models\User;
 use illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 
 class superadminController extends Controller
 {
+    public function index(Request $request)
+    {
+        $santri = Santri::all();
+        $jumlahUser = $santri->count();
+        return view('superadmin.dashboard', compact('santri', 'jumlahUser'));
+    }
     public function ajuan()
     {
         return view('superadmin.ajuan');
@@ -20,13 +29,15 @@ class superadminController extends Controller
         return view('superadmin.csantri');
     }
 
-    public function index(Request $request)
+    public function data(Request $request)
     {
         $pagination = 5;
-        $santris   = Santri::orderBy('created_at', 'desc')->paginate($pagination);
+        $santri  = Santri::orderBy('created_at', 'desc')->paginate($pagination);
         // $santris = Santri::all();
-        $i = ($santris->currentPage() - 1) * $pagination;
-        return view('superadmin.data', compact('santris', 'i'));
+        $kelas = Kelas::all();
+        $tingkat = tingkat::all();
+        $i = ($santri->currentPage() - 1) * $pagination;
+        return view('superadmin.data', compact('santri', 'i', 'kelas', 'tingkat'));
     }
 
     /**
@@ -36,7 +47,8 @@ class superadminController extends Controller
     {
         $user = User::all();
         $tagihan = Tagihan::all();
-        return view('superadmin.csantri', compact('user', 'tagihan'));
+        $santri = Santri::all();
+        return view('superadmin.csantri', compact('user', 'tagihan', 'santri'));
     }
 
     /**
@@ -55,8 +67,9 @@ class superadminController extends Controller
             'alamat',
             'Thn_masuk',
             'Thn_keluar',
-            'kelas',
-            'tingkat'
+            'id_kelas',
+            'id_tingkat'
+
         ]);
         // dd($request->all());
         $tingkat = new Santri;
@@ -66,10 +79,15 @@ class superadminController extends Controller
         $nama_foto = date('YmdHis') . "." . $foto_ekstensi;
         $foto->move(public_path('foto'), $nama_foto);
         // Menyimpan file di storage/app/public/images
-        // $path = $request->foto->storeAs('public/images', $nama_foto);
+        $user = User::create([
+            'name' => $request->nama,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role_id' => 3,
+        ]);
 
         $data = ([
-            'user_id' => $request->input('user_id'),
+            'user_id' => $user->id,
             'Id_tagihan' => $request->input('Id_tagihan'),
             'foto' => $nama_foto,
             'nama' => $request->input('nama'),
@@ -79,12 +97,12 @@ class superadminController extends Controller
             'alamat' => $request->input('alamat'),
             'Thn_masuk' => $request->input('Thn_masuk'),
             'Thn_keluar' => $request->input('Thn_keluar'),
-            'kelas' => $request->input('kelas'),
-            'tingkat' => $request->input('tingkat')
+            'id_kelas' => $request->input('id_kelas'),
+            'id_tingkat' => $request->input('id_tingkat')
         ]);
-        // dd($request->except('_token'));
+        // dd($data);
         Santri::create($data);
-        return redirect('dashboard/superadmin/data')->with('success', 'Santri berhasil ditambahkan.');
+        return redirect('/superadmin/data')->with('success', 'Santri berhasil ditambahkan.');
     }
 
     /**
@@ -124,8 +142,8 @@ class superadminController extends Controller
             'alamat' => 'required',
             'Thn_masuk' => 'required',
             'Thn_keluar',
-            'kelas' => 'required',
-            'tingkat' => 'required',
+            'id_kelas',
+            'id_tingkat'
         ]);
         $foto = $request->file('foto');
         $foto_ekstensi = $foto->extension();
@@ -142,18 +160,19 @@ class superadminController extends Controller
             'alamat' => $request->input('alamat'),
             'Thn_masuk' => $request->input('Thn_masuk'),
             'Thn_keluar' => $request->input('Thn_keluar'),
-            'kelas' => $request->input('kelas'),
-            'tingkat' => $request->input('tingkat')
+            'id_kelas' => $request->input('id_kelas'),
+            'id_tingkat' => $request->input('id_tingkat')
         ]);
         $santri = Santri::findOrFail($Id_santri);
         $user = User::all();
         $tagihan = Tagihan::all();
+        $kelas = kelas::all();
         // $santri = Santri::find($Id_santri);
         $santri->update($data);
 
         // $santri->update($request->except(['_token', '_method']));
 
-        return redirect()->route('data', compact('santri', 'user', 'tagihan'))
+        return redirect()->route('data', compact('santri', 'user', 'tagihan', 'kelas', 'tingkat'))
             ->with('success', 'Santri updated successfully.');
     }
 

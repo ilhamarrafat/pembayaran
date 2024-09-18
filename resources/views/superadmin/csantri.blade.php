@@ -14,7 +14,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
           <div class="image">
-            <img src="{{asset('template/assets/Admin/dist/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
+            <img src="{{ asset('foto/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
           </div>
           <div class="info">
             <a>Hello,
@@ -111,16 +111,15 @@
                   @endif
                   @if ($message = Session::get('success'))
                   @endif
-                  <form method="POST" action="{{ route('santri.store') }}" enctype="multipart/form-data">
+                  <form method="POST" action="{{ route('santri.store')}}" enctype="multipart/form-data">
                     @csrf
-                    @method('POST')
                     <strong class="mt-3">Upload Foto</strong>
                     <div class="input-group mb-3">
                       <input type="file" placeholder="uploadfile" for="foto" name="foto" class="form-control" id="foto">
                     </div>
-                    <div class="input-group mb-3">
+                    <!-- <div class="input-group mb-3">
                       <label class="input-group-text col-md-3" for="user_id">Sebagai</label>
-                      <select class="form-select col-md-5" id="user_id" name="user_id">
+                      <select class="form-select col-md-9" id="user_id" name="user_id">
                         @foreach ($user as $user )
                         <option value="{{$user->id}}">{{$user->name}}</option>
                         @endforeach
@@ -128,21 +127,25 @@
                     </div>
                     <div class="input-group mb-3">
                       <label class="input-group-text col-md-3" for="Tagihan">user id</label>
-                      <select class="form-select col-md-5" id="Id_tagihan" name="Id_tagihan">
+                      <select class="form-select col-md-9" id="Id_tagihan" name="Id_tagihan">
                         @foreach ($tagihan as $tagihan )
                         <option value="{{$tagihan->Id_tagihan}}">{{$tagihan->Id_tagihan}}</option>
                         @endforeach
                       </select>
-                    </div>
+                    </div> -->
 
                     <div class="form-group mb-3">
                       <strong>Nama</strong>
                       <input type="text" id="nama" name="nama" class="form-control" placeholder="Nama">
                     </div>
+                    <div class="form-group mb-3">
+                      <strong>Email</strong>
+                      <input type="text" id="email" name="email" class="form-control" placeholder="Nama">
+                    </div>
                     <strong>Jenis Kelamin</strong>
                     <div class="input-group mb-3">
                       <label class="input-group-text" for="inputGroupSelect01">Options</label>
-                      <select class="form-select col-md-5" name="Jenis_kelamin" id="Jenis_kelamin">
+                      <select class="form-select col-md-9" name="Jenis_kelamin" id="Jenis_kelamin">
                         <option selected>Pilih</option>
                         <option value="1">Laki-Laki</option>
                         <option value="2">Perempuan</option>
@@ -150,11 +153,11 @@
                     </div>
                     <div class="form-group mb-3">
                       <strong>Tempat Lahir</strong>
-                      <input class="form-control" id="Tmp_lhr" name="Tmp_lhr" placeholder="Tmp_lhr"></input>
+                      <input class="form-control" id="Tmp_lhr" name="Tmp_lhr" placeholder="Wonosobo"></input>
                     </div>
                     <strong>Tanggal Lahir</strong>
                     <div class="form-group mb-3">
-                      <input type="date" id="Tgl_lhr" name="Tgl_lhr">
+                      <input type="date" id="Tgl_lhr" name="Tgl_lhr" class="form-control" placeholder="Tahun">
                     </div>
                     <div class="form-group mb-3">
                       <strong>Alamat</strong>
@@ -169,18 +172,22 @@
                       <input type="date" id="Thn_keluar" name="Thn_keluar" class="form-control" placeholder="Tahun">
                     </div>
                     <div class="form-group mb-3">
+                      @foreach ($kelas as $kelas )
                       <strong>Kelas</strong>
                       <input type="text" id="kelas" name="kelas" class="form-control" placeholder="kelas">
+                      @endforeach
                     </div>
                     <strong>Tingkat</strong>
                     <div class="input-group mb-3">
+                      @foreach ($tingkat as $tingkat)
                       <label class="input-group-text col-md-3" for="tingkat">Tingkat</label>
-                      <select class="form-select col-md-5" id="tingkat" name="tingkat">
+                      <select class="form-select col-md-9" id="tingkat" name="tingkat">
                         <option selected>Pilih</option>
                         <option value="MTs">MTs</option>
                         <option value="MA">MA</option>
                         <option value="Salaf">Salaf</option>
                       </select>
+                      @endforeach
                     </div>
                     <button type="submit" class="btn btn-primary mt-3">Submit</button>
                   </form>

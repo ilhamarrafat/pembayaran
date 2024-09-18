@@ -13,25 +13,43 @@ class Santri extends Model
     protected $fillable = [
         'Id_santri',
         'user_id',
-        'Id_tagihan',
         'foto',
         'nama',
-        'kelas',
         'Jenis_kelamin',
         'Tmp_lhr',
         'Tgl_lhr',
         'alamat',
         'Thn_masuk',
         'Thn_keluar',
-        'tingkat'
+        'id_kelas',
+        'id_tingkat'
     ];
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    public function kelas()
+    {
+        return $this->belongsTo(kelas::class, 'id_kelas');
+    }
+
+    public function tingkat()
+    {
+        return $this->belongsTo(Tingkat::class, 'id_tingkat');
+    }
+
+    public function bayar()
+    {
+        return $this->hasMany(Bayar::class, 'Id_santri');
+    }
+    public function transaksi()
+    {
+        return $this->hasMany(transaksi::class);
+    }
     public function tagihan()
     {
-        return $this->belongsTo(Tagihan::class, 'Id_tagihan', 'Id_tagihan');
+        return $this->hasMany(Tagihan::class, 'id_kelas', 'id_kelas')
+            ->where('id_tigkat', $this->id_tigkat);
     }
 }

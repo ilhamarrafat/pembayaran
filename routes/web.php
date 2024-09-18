@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\kelasController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\tingkatController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BayarController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\dashboardController;
@@ -14,6 +17,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\santriController;
+use App\Http\Controllers\telatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,11 +50,20 @@ Route::middleware(['auth'])->group(function () {
   // Route::put('/superadmin.csantri/{Id_santri}', [santriController::class, 'create'])->name('santris.create')->middleware('userAkses:1');
 
   Route::middleware('userAkses:1')->group(function () {
+    Route::get('dashboard/superadmin', [superadminController::class, 'index'])->name('sdashboard');
     // santri
-    Route::get('dashboard/superadmin/data', [superadminController::class, 'index'])->name('data');
+    Route::get('dashboard/superadmin/data', [superadminController::class, 'data'])->name('data');
     Route::get('dashboard/superadmin/create', [superadminController::class, 'create'])->name('santri.create');
-    Route::POST('csantri', [superadminController::class, 'store'])->name('santri.store');
-    Route::get('dashboard/superadmin/data', [superadminController::class, 'index'])->name('data');
+    Route::post('/dashboard/superadmin/data', [superadminController::class, 'store'])->name('santri.store');
+    //kelas
+    // Route::get('/superadmin/kelas', [kelasController::class, 'index'])->name('kelas');
+    // Route::get('/superadmin/kelas/create', [kelasController::class, 'create'])->name('kelas.create');
+    // Route::post('/superadmin/kelas/data', [kelasController::class, 'store'])->name('kelas.store');
+    // //tingkat
+    // Route::get('/superadmin/tingkat', [tingkatController::class, 'index'])->name('tingkat');
+    // Route::get('/superadmin/tingkat/create', [tingkatController::class, 'create'])->name('tingkat.create');
+    // Route::post('/superadmin/tingkat/data', [tingkatController::class, 'store'])->name('tingkat.store');
+    // Route::get('/superadmin/tingkat/data', [superadminController::class, 'index'])->name('data');
     Route::resource('data', superadminController::class);
     Route::get('/data/{Id_santri}', [superadminController::class, 'show'])->name('santri.show');
     Route::get('/data/{Id_santri}/edit', [superadminController::class, 'edit'])->name('santri.edit');
@@ -74,15 +87,28 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/{id_admin}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/{id_admin}', [ProfileController::class, 'update'])->name('profile.update');
     //pembayaran
+    Route::resource('pembayaran', PaymentController::class);
     Route::get('dashboard/superadmin/pembayaran', [PaymentController::class, 'index'])->name('pembayaran');
     Route::get('/pembayaran/create', [PaymentController::class, 'create'])->name('tagihan.create');
-    Route::post('/create', [PaymentController::class, 'store'])->name('tagihan.store');
-    Route::get('/admin/pembayaran/{id}', [PaymentController::class, 'showAdmin'])->name('pembayaran.admin.show');
+    Route::post('/superadmin/pembayaran', [PaymentController::class, 'store'])->name('tagihan.store');
+    Route::get('/pembayaran/export/excel', [PaymentController::class, 'export_excel'])->name('export');
+    // Route::get('/superadmin/pembayaran/{Id_tagihan}/{Id_santri}', [PaymentController::class, 'show'])->name('pembayaran.admin.show');
   });
+
   Route::middleware('userAkses:3')->group(function () {
-    Route::get('dashboard/santri', [santriController::class, 'index'])->name('index');
-    Route::get('/pembayaran', [santriController::class, 'pembayaran'])->name('bayar');
-    Route::get('/santri/pembayaran/{Id_tagihan}', [PaymentController::class, 'showSantri']);
+    Route::get('dashboard/santri', [santriController::class, 'index'])->name('index.santri');
+    Route::get('/bayar/{id}', [BayarController::class, 'index'])->name('bayar');
+    Route::get('bayar/{santri}', [BayarController::class, 'lihatBayar'])->name('bayar.index');
+    // Route::post('/bayar', [santriController::class, 'bayar'])->name('bayar.proses');
+    Route::get('/santri/profile', [santriController::class, 'create'])->name('profile.santri');
+    Route::POST('create', [santriController::class, 'store'])->name('santri.store');
+    Route::get('/santri/edit', [santriController::class, 'edit'])->name('santri.edit');
+    Route::put('/santri/{id}', [santriController::class, 'update'])->name('santri.update');
+    // Route untuk menyimpan tagihan
+    Route::POST('/cekout', [BayarController::class, 'store'])->name('cekout');
+    Route::get('/santri/ajuan', [telatController::class, 'index'])->name('sktm');
+
+    // Route::get('/santri/pembayaran/', [PaymentController::class, 'showSantri']);
   });
 
   Route::get('dashboard/superadmin/ajuan', [superadminController::class, 'ajuan'])->name('ajuan');

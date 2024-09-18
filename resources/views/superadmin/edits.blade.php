@@ -14,7 +14,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
           <div class="image">
-            <img src="{{asset('template/assets/Admin/dist/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
+            <img src="{{ asset('foto/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
           </div>
           <div class="info">
             <a>Hello,
@@ -110,8 +110,10 @@
               <div class="card" style="width: 30rem;">
                 <div class="card-body">
                   @if ($santris->foto)
-                  <img class="mb-1" src="{{url('foto/'.$santris->foto)}}" style="width: 100px;">@endif
-
+                  <img class="mb-1" src="{{ asset('storage/'.$santris->foto) }}" style="width: 100px;">@endif
+                  @else
+                  <p>Foto tidak tersedia</p>
+                  @endif
                   <input type="file" name="foto" id="foto" class="form-control" value="{{ $santris->foto }}">
 
                   <strong>Nama</strong>

@@ -8,22 +8,30 @@ use Illuminate\Database\Eloquent\Model;
 class Bayar extends Model
 {
     use HasFactory;
-    protected $table = 'Bayar';
+    protected $table = 'bayar';
     protected $primaryKey = 'Id_Bayar';
 
     protected $fillable = [
-        'nominal_bayar',
+        'Id_bayar',
         'Metode',
         'Deskripsi',
         'waktu_transaksi',
+        'jenis_transaksi',
         'status_transaksi',
-        'no_transaksi',
+        'Id_santri',
+        'total_bayar',
         'Id_tagihan',
-        'jenis_transaksi'
+        'total_tagihan'
     ];
+    // Model Bayar
+
+    public function santri()
+    {
+        return $this->belongsTo(Santri::class);
+    }
+
     public function tagihan()
     {
-        return $this->belongsToMany(Tagihan::class, 'bayar')
-            ->withPivot('status_transaksi', 'waktu_transaksi');
+        return $this->belongsTo(Tagihan::class);
     }
 }

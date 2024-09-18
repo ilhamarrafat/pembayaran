@@ -101,36 +101,32 @@
                                 </div>
                                 @endif
                                 <h5 class="card-header text-center"><b>BUAT TAGIHAN</b></h5>
-                                <form method="POST" action="{{ route('tagihan.store') }}" enctype="multipart/form-data">
+                                <form method="POST" action="{{route('tagihan.store')}}">
                                     @csrf
-                                    @method('POST')
                                     <div class="mb-3">
-                                        <label for="" class="form-label">Nama Tagihan</label>
+                                        <label class="form-label">Nama Tagihan</label>
                                         <input type="text" class="form-control" id="nama_tagihan" name="nama_tagihan">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="" class="form-label">Nominal Tagihan</label>
-                                        <input type="number" class="form-control" id="nominal_tagihan" name="nominal_tagihan">
+                                        <label class="form-label">Nominal Tagihan</label>
+                                        <input type="text" class="form-control" id="nominal_tagihan" name="nominal_tagihan">
                                     </div>
-                                    <div class="input-group mb-3">
-                                        <label class="mr-5" for="kelas">Kelas</label>
-                                        <select class="form-select ml-3 mt-1" id="kelas" name="kelas">
-                                            <option selected>Pilih Kelas</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
+                                    <div class="form-group mb-3">
+                                        <strong>Kelas</strong>
+                                        <select name="id_kelas" class="form-control">
+                                            <option selected disabled>Pilih Kelas</option>
+                                            @foreach($kelas as $k)
+                                            <option value="{{ $k->id_kelas }}">{{ $k->kelas }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
-                                    <div class="input-group mb-3">
-                                        <label class="mr-5" for="tingkat">Tingkat</label>
-                                        <select class="form-select ml-3 mt-1" id="tingkat" name="tingkat">
-                                            <option selected>Pilih Tingkat</option>
-                                            <option value="MTs">MTs</option>
-                                            <option value="MA">MA</option>
-                                            <option value="Salaf">Salaf</option>
+                                    <div class="form-group mb-3">
+                                        <strong>Tingkat</strong>
+                                        <select name="id_tingkat" class="form-control">
+                                            <option selected disabled>Pilih Tingkat</option>
+                                            @foreach($tingkat as $t)
+                                            <option value="{{ $t->id_tingkat }}">{{ $t->tingkat }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="mb-3">
@@ -139,12 +135,35 @@
                                     </div>
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </form>
+                                <script>
+                                    function formatRupiah(angka, prefix) {
+                                        var number_string = angka.replace(/[^,\d]/g, '').toString(),
+                                            split = number_string.split(','),
+                                            sisa = split[0].length % 3,
+                                            rupiah = split[0].substr(0, sisa),
+                                            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+                                        if (ribuan) {
+                                            separator = sisa ? '.' : '';
+                                            rupiah += separator + ribuan.join('.');
+                                        }
+
+                                        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+                                        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+                                    }
+
+                                    document.getElementById('nominal_tagihan').addEventListener('keyup', function(e) {
+                                        this.value = formatRupiah(this.value, 'Rp. ');
+                                    });
+                                </script>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
     @include('dadmin.style')
     @include('dadmin.script')

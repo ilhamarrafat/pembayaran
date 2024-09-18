@@ -20,7 +20,9 @@ class dashboardController extends Controller
     }
     public function admin()
     {
-        return view('admin.dashboard');
+        $santri = Santri::all();
+        $jumlahUser = $santri->count();
+        return view('admin.dashboard', compact('santri', 'jumlahUser'));
         // echo "Selamat, datang dihalaman admin";
         // echo "<h1>".Auth::user()->name."</h1>";
         // echo "<a href='/logout'>logout>></a>";
@@ -30,8 +32,5 @@ class dashboardController extends Controller
         $santri = Santri::all();
         $jumlahUser = $santri->count();
         return view('superadmin.dashboard', compact('santri', 'jumlahUser'));
-        // echo "Selamat, datang dihalaman superadmin";
-        // echo "<h1>".Auth::user()->name."</h1>";
-        // echo "<a href='/logout'>logout>></a>";
     }
 }

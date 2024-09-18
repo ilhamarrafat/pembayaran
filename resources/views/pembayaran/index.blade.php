@@ -14,7 +14,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
           <div class="image">
-            <img src="{{asset('template/assets/Admin/dist/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
+            <img src="{{ asset('foto/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
           </div>
           <div class="info">
             <a>Hello,
@@ -25,7 +25,7 @@
         <nav class="mt-2">
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <li class="nav-item menu-open">
-              <a href="{{route('dashboard')}}" class="nav-link ">
+              <a href="{{url('dashboard/superadmin')}}" class="nav-link ">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>
                   Dashboard
@@ -41,7 +41,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="{{route('pembayaran')}}" class="nav-link">
                 <i class="nav-icon fa fa-newspaper-o" style="font-size:20px"></i>
                 <p>
                   Berita
@@ -93,20 +93,7 @@
         <div class="row">
           <!-- Left col -->
           <div class="col-md-12">
-            <button type="button" class="btn btn-warning col-md-2 mb-2">Cetak Data</button>
-            <button type="button" class="btn btn-success col-md-1 mb-2">Excel</button>
-            <button type="button" class="btn btn-warning col-md-1 mb-2">pdf</button>
-
             <div class="col-md-5 mb-10">
-
-              <form class="row g-3">
-                <div class="col-auto">
-                  <input class="form-control" type="text" placeholder="Search" aria-label="default input example">
-                </div>
-                <button class="btn btn-primary" type="submit">
-                  Cari
-                </button>
-              </form>
 
             </div>
             <!-- TABLE: LATEST ORDERS -->
@@ -117,47 +104,28 @@
                     PEMBAYARAN SANTRI
                   </b>
                 </h4>
+                <form class="row g-3">
+                  <div class="col-auto">
+                    <input class="form-control" type="text" placeholder="Search" aria-label="default input example">
+                  </div>
+                  <button class="btn btn-primary" type="submit">
+                    Cari
+                  </button>
+                </form>
+                <div class="btn btn-success mb-2"><a href=""></a> Cetak Excel</div>
                 <div class="card-tools">
                 </div>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
                 <div class="table-responsive">
-                  <table class="table  table-bordered">
-                    <thead class="middle">
-                      <tr>
-                        <th>Nomor Transaksi</th>
-                        <th>Nama Santri</th>
-                        <th>Jumlah Pembayaran</th>
-                        <th>Metode Pembayaran</th>
-                        <th>Tanggal Pembayaran</th>
-                        <th>Status Transaksi</th>
-                        <th>Deskripsi Transaksi</th>
-                        <th>Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody class="table-group-divider">
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                          <a href="">Lihat Detail</a>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  @include('pembayaran.transaksi')
                 </div>
                 <!-- /.table-responsive -->
               </div>
               <!-- /.card-body -->
               <div class="card-footer clearfix">
-                <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">Place New Order</a>
-                <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right">View All Orders</a>
+                <a href="javascript:void(0)" class="btn btn-sm btn-success float-right">View All Orders</a>
               </div>
               <!-- /.card-footer -->
             </div>
@@ -165,7 +133,14 @@
             <!-- TABLE: LATEST ORDERS -->
             <!-- /.card -->
           </div>
+
           <div class="col-md-12 mt-3">
+
+            <div class="col-md-5 mb-10">
+
+
+
+            </div>
             <div class="card ">
               <div class="card-header border-success">
                 <h4>
@@ -173,53 +148,36 @@
                     TAGIHAN SANTRI
                   </b>
                 </h4>
-                <button class="btn btn-info float-right">
-                  <a href="{{route('tagihan.create')}}">
-                  </a>
-                  Buat Tagihan
-                </button>
+                <div>
+                  <form class="row g-4">
+                    <div class="col-auto">
+                      <input class="form-control" type="text" placeholder="Search" aria-label="default input example">
+                    </div>
+                    <button class="btn btn-primary" type="submit">
+                      Cari
+                    </button>
+                  </form>
+                  <div class="button">
+                    <a class="btn btn-success mb-2" href="{{route('export')}}">Cetak Excel</a>
+                  </div>
+                  <div class="float-right">
+                    <a class="btn btn-info" href="{{route('tagihan.create')}}">
+                      Buat Tagihan
+                    </a>
+                  </div>
+                </div>
 
               </div>
               <!-- /.card-header -->
               <div class="card-body">
                 <div class="table-responsive">
-                  <table class="table table-bordered">
-                    <thead class="middle">
-                      <tr>
-                        <th>No</th>
-                        <th>Nama Tagihan</th>
-                        <th>Nominal Tagihan</th>
-                        <th>Batas Waktu</th>
-                        <th>Kelas</th>
-                        <th>Tingkat</th>
-                        <th>Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody class="table-group-divider">
-                      @foreach($tagihan as $item)
-                      <tr>
-                        <td>{{$item->Id_tagihan }}</td>
-                        <td>{{$item->nama_tagihan}}</td>
-                        <td>{{$item->nominal_tagihan}}</td>
-                        <td>{{$item->waktu_tagihan}}</td>
-                        @endforeach
-                        @foreach($santri as $santri)
-                        <td>{{$santri->kelas}}</td>
-                        <td>{{$santri->tingkat}}</td>
-                        @endforeach
-                        <td>
-                          <a href="">Lihat Detail</a>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  @include('pembayaran.tagihan')
                 </div>
                 <!-- /.table-responsive -->
               </div>
               <!-- /.card-body -->
               <div class="card-footer clearfix">
-                <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">Place New Order</a>
-                <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right">View All Orders</a>
+                <a href="javascript:void(0)" class="btn btn-sm btn-success float-right">View All Orders</a>
               </div>
               <!-- /.card-footer -->
             </div>
