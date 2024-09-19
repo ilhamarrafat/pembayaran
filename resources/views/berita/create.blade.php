@@ -86,9 +86,7 @@
       <!-- /.sidebar -->
   </aside>
   <section>
-
     <div class="content-wrapper">
-
       <div class="container ml-5">
         <div class="row">
           <div class="col-md-12 mt-2 ">
@@ -102,34 +100,34 @@
                 @endforeach
               </ul>
             </div>
-            <div class="">
-              @endif
-              @if ($message = Session::get('success'))
-              @endif
-              <form method="POST" action="{{ route('berita.store') }}" enctype="multipart/form-data">
-                @csrf
-                @method('POST')
-                <strong>Upload Foto</strong>
-                <div class="input-group mb-2 col-md-8">
-                  <input type="file" placeholder="uploadfile" name="gambar" class="form-control" id="gambar">
-                  <label class="input-group-text" for="gambar">Upload</label>
-                </div>
-                <div class="form-group mb-2 col-md-8">
-                  <strong>Judul</strong>
-                  <input type="text" id="judul" name="judul" class="form-control" placeholder="Judul">
-                </div>
-                <div class="form-group mb-2 col-md-8">
-                  <strong>Isi</strong>
-                  <input type="file" placeholder="uploadfile" name="isi" class="form-control" id="isi">
-                  <label class="input-group-text" for="isi">Upload</label>
-                </div>
-                <button type="submit" class="btn btn-primary mt-3">Submit</button>
-              </form>
+            <div class=" card" style="width: 30rem;">
+              <div class=" card-body">
+                @endif
+                @if ($message = Session::get('success'))
+                @endif
+                <form method="POST" action="{{ route('berita.store') }}" enctype="multipart/form-data">
+                  @csrf
+                  @method('POST')
+                  <strong>Upload Foto</strong>
+                  <div class="input-group mb-2 col-md-8">
+                    <input type="file" placeholder="uploadfile" name="gambar" class="form-control" id="gambar">
+                    <label class="input-group-text" for="gambar">Upload</label>
+                  </div>
+                  <div class="form-group mb-2 col-md-8">
+                    <strong>Judul</strong>
+                    <input type="text" id="judul" name="judul" class="form-control" placeholder="Judul">
+                  </div>
+                  <div class="form-group mb-2 col-md-8">
+                    <strong>Isi</strong>
+                    <textarea type="text" placeholder="isi berita" name="isi" class="form-control" id="isi"></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
   </section>
   <!-- /.sidebar-menu -->

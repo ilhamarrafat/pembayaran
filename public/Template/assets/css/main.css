@@ -1544,121 +1544,130 @@ section,
 /*--------------------------------------------------------------
 # Pricing Section
 --------------------------------------------------------------*/
+/* Contact Section */
 .pricing {
-  --background-color: color-mix(in srgb, var(--heading-color), transparent 90%);
+    padding: 60px 0;
+    background-color: #f4f6f9;
 }
 
-.pricing .pricing-item {
+.section-title h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.section-title p {
+    color: #6c757d;
+    text-align: center;
+}
+
+/* Custom Card Styles */
+.custom-card {
+  border: none;
+  border-radius: 6px;
+  /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* Smooth transitions */
+  max-width: 300px;
+  /* Smaller width for cards */
+  margin: auto;
+  /* Center cards within their column */
+}
+
+.custom-card img {
+  border-radius: 8px 8px 0 0;
+  /* Rounded corners on top */
+}
+
+.custom-card:hover {
+  transform: scale(1.05);
+  /* Slightly scale up on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  /* Enhance shadow on hover */
+}
+
+.btn-primary {
   background-color: #006015;
-  box-shadow: 0 3px 20px -2px color-mix(in srgb, var(--default-color), transparent 90%);
-  padding: 60px 40px;
-  height: 100%;
-  border-radius: 5px;
+  /* Accent color */
+  border: none;
+  /* Remove default border */
+  border-radius: 20px;
+  /* Rounded button corners */
+  padding: 8px 16px;
+  /* Button padding */
+  transition: background-color 0.3s ease;
+  /* Smooth background color transition */
 }
 
-.pricing h3 {
-  font-weight: 600;
-  margin-bottom: 15px;
-  font-size: 20px;
+.btn-primary:hover {
+  background-color: #004d00;
+  /* Darker shade on hover */
+  text-decoration: none;
+  /* Remove underline */
 }
 
-.pricing h4 {
-  color: var(--accent-color);
-  font-size: 48px;
-  font-weight: 400;
-  font-family: var(--heading-font);
-  margin-bottom: 0;
-}
-
-.pricing h4 sup {
-  font-size: 28px;
-}
-
-.pricing h4 span {
-  color: color-mix(in srgb, var(--default-color), transparent 50%);
-  font-size: 18px;
-}
-
-.pricing ul {
-  padding: 20px 0;
-  list-style: none;
-  color: color-mix(in srgb, var(--default-color), transparent 30%);
-  text-align: left;
-  line-height: 20px;
-}
-
-.pricing ul li {
-  padding: 10px 0;
-  display: flex;
-  align-items: center;
-}
-
-.pricing ul i {
-  color: #059652;
-  font-size: 24px;
-  padding-right: 3px;
-}
-
-.pricing ul .na {
-  color: color-mix(in srgb, var(--default-color), transparent 60%);
-}
-
-.pricing ul .na i {
-  color: color-mix(in srgb, var(--default-color), transparent 60%);
-}
-
-.pricing ul .na span {
-  text-decoration: line-through;
-}
-
-.pricing .buy-btn {
-  color: var(--accent-color);
-  background-color: var(--background-color);
-  display: inline-block;
-  padding: 8px 35px 10px 35px;
-  border-radius: 50px;
-  transition: none;
-  font-size: 16px;
-  font-weight: 500;
-  font-family: var(--heading-font);
-  transition: 0.3s;
-  border: 1px solid var(--accent-color);
-}
-
-.pricing .buy-btn:hover {
-  background: var(--accent-color);
-  color: var(--contrast-color);
-}
-
-.pricing .featured {
-  border-top-color: var(--accent-color);
-}
-
-.pricing .featured .buy-btn {
-  background: var(--accent-color);
-  color: var(--contrast-color);
-}
-
-@media (max-width: 992px) {
-  .pricing .box {
-    max-width: 60%;
-    margin: 0 auto 30px auto;
+/* Responsive Design */
+@media (max-width: 768px) {
+  .row-cols-md-2 {
+    
   }
+}
+
+@media (max-width: 576px) {
+  .row-cols-lg-3 {
+   
+  }
+}
+
+.card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.card-img-top {
+    border-bottom: 5px solid #005c05;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.card-text {
+    color: #6c757d;
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background-color: #005c05;
+    border-color: #006015;
+    border-radius: 5px;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #005c05;
+    border-color: #006015;
 }
 
 @media (max-width: 767px) {
-  .pricing .box {
-    max-width: 80%;
-    margin: 0 auto 30px auto;
-  }
+    .card-img-top {
+        height: 150px;
+    }
 }
 
-@media (max-width: 420px) {
-  .pricing .box {
-    max-width: 100%;
-    margin: 0 auto 30px auto;
-  }
-}
 
 /*--------------------------------------------------------------
 # Testimonials Section
@@ -1853,54 +1862,106 @@ section,
 /*--------------------------------------------------------------
 # Contact Section
 --------------------------------------------------------------*/
-.contact .info-wrap {
-  box-shadow: 0px 0px 20px color-mix(in srgb, var(--default-color), transparent 90%);
-  border-top: 3px solid var(--accent-color);
-  border-bottom: 3px solid var(--accent-color);
-  padding: 30px;
-  height: 100%;
+/* Contact Section */
+.contact {
+  padding: 60px 0;
+  background-color: #f9f9f9;
 }
 
-@media (max-width: 575px) {
-  .contact .info-wrap {
-    padding: 20px;
-  }
+.section-title h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 20px;
 }
 
-.contact .info-item {
-  margin-bottom: 40px;
+.section-title p {
+  color: #6c757d;
 }
 
-.contact .info-item i {
-  font-size: 20px;
+.info-wrap {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.info-item {
+  margin-bottom: 20px;
+}
+
+.info-item i {
+  font-size: 24px;
   color: var(--accent-color);
-  background: color-mix(in srgb, var(--accent-color), transparent 92%);
-  width: 44px;
-  height: 44px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50px;
-  transition: all 0.3s ease-in-out;
   margin-right: 15px;
 }
 
-.contact .info-item h3 {
-  padding: 0;
+.info-item h3 {
   font-size: 18px;
-  font-weight: 700;
   margin-bottom: 5px;
 }
 
-.contact .info-item p {
-  padding: 0;
-  margin-bottom: 0;
-  font-size: 14px;
+.info-item p {
+  margin: 0;
+  color: #6c757d;
 }
 
-.contact .info-item:hover i {
+.php-email-form {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+.php-email-form .form-control {
+  border-radius: 5px;
+  box-shadow: none;
+  border-color: #ddd;
+}
+
+.php-email-form button {
   background: var(--accent-color);
-  color: var(--contrast-color);
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.php-email-form button:hover {
+  background: color-mix(in srgb, var(--accent-color), transparent 15%);
+}
+
+iframe {
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Slider Animation */
+.card-slider {
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+.card-slider .card {
+  flex: 0 0 100%;
+  transition: transform 1s ease-in-out;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.card-slider-wrapper {
+  display: flex;
+  animation: slide 15s infinite;
 }
 
 .contact .php-email-form {
@@ -2315,9 +2376,12 @@ section,
   }
 }
 
-.login-box-msg,
-.register-box-msg {
-  padding: 0 20px 20px;
-  margin: 0;
-  text-align: center;
+/* Styling for the image with a white shadow */
+.custom-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 20px;
+  /* Rounded corners for the image */
+  box-shadow: 0 10px 20px rgba(255, 255, 255, 0.7);
+  /* White shadow with transparency */
 }

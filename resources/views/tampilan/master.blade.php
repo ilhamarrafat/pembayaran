@@ -31,8 +31,8 @@
               </a>
             </div>
           </div>
-          <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="200">
-            <img src="{{asset('template/assets/img/hero-img.png')}}" class="img-fluid animated" alt="">
+          <div class="col-lg-6 order-1 order-lg-2 hero-img text-center custom-hero-img" data-aos="zoom-out" data-aos-delay="200">
+            <img src="{{asset('template/assets/img/hero-img.png')}}" class="img-fluid animated custom-img" alt="">
           </div>
         </div>
       </div>
@@ -82,53 +82,52 @@
       </div>
     </section>
     <!-- About Section -->
-    <section id="about" class="about section">
-
+    <section id="about" class="about section py-5">
       <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2 class="">Berita</h2>
-      </div><!-- End Section Title -->
+      <div class="container section-title " data-aos="fade-up">
+        <h2 class="text-center">Berita</h2>
+      </div>
       <div class="container">
-        <div class="row gy-4  order-2 order-lg-1 ">
-          <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
-            <div class="container">
-              <figure class="figure">
-                <img src="" class="figure-img img-fluid rounded" alt="">
-                <figcaption class="figure-caption">A caption for the above image.</figcaption>
-              </figure>
+        <div class="row gy-4">
+          <!-- Left Column: Berita Images with Captions -->
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="row">
+              @foreach ($beritas as $item)
+              <div class="col-md-12 mb-4">
+                <div class="card h-100">
+                  @if ($item->gambar)
+                  <img src="{{ url('gambar/'.$item->gambar) }}" class="card-img-top" alt="{{ $item->judul }}" style="max-height: 200px; object-fit: cover;">
+                  @endif
+                  <div class="card-body">
+                    <h5 class="card-title">{{ $item->judul }}</h5>
+                    <p class="card-text">{{ \Illuminate\Support\Str::limit($item->isi, 100) }}</p>
+                  </div>
+                </div>
+              </div>
+              @endforeach
             </div>
           </div>
+          <!-- Right Column: Berita Terkini List -->
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-            <h2>Berita Terkini</h2>
-            <table class="table table-dark table-dark">
-              <thead>
-                <img src="" alt="">
-                gambar
-              </thead>
-              <tbody>
-                <tr class="table-active">
-                  berita terkini hari ini
-                </tr>
-              </tbody>
-            </table>
-            <table class="table table-dark table-striped">
-              <thead>
-                <img src="" alt="">
-                gambar
-              </thead>
-              <tbody>
-                <tr class="table-active">
-                  berita terkini hari ini
-                </tr>
-              </tbody>
-            </table>
+            <h5 class="mb-2">Berita Terkini</h5>
+            <ul class="list-group">
+              @foreach ($beritas as $item)
+              <li class="list-group-item d-flex align-items-center">
+                @if ($item->gambar)
+                <img src="{{ url('gambar/'.$item->gambar) }}" alt="{{ $item->judul }}" class="me-3" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
+                @endif
+                <div>
+                  <h6 class="mb-1">{{ $item->judul }}</h6>
+                  <small>{{ \Illuminate\Support\Str::limit($item->isi, 50) }}</small>
+                </div>
+              </li>
+              @endforeach
+            </ul>
           </div>
-
         </div>
-
       </div>
-
-    </section><!-- /About Section -->
+    </section>
+    <!-- /About Section -->
 
     <!-- Why Us Section -->
     <section id="why-us" class="section why-us" data-builder="section">
@@ -153,57 +152,56 @@
 
       </div>
 
-    </section><!-- /Call To Action Section -->
-    <!-- Pricing Section -->
+    </section>
     <section id="kontak" class="pricing section">
-
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
         <h2>Kontak</h2>
-        <p>hubungi admin melalui</p>
+        <p>Hubungi admin melalui</p>
       </div><!-- End Section Title -->
       <div class="container">
-        <div class="row gy-4">
-          <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="100">
-            <div class="card" style="width: 18rem;">
-              <img src="..." class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="buy-btn">Go somewhere</a>
-              </div>
-            </div>
-          </div><!-- End Pricing Item -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
 
-          <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="200">
-            <div class="card" style="width: 18rem;">
-              <img src="..." class="card-img-top" alt="...">
+          <div class="col" data-aos="zoom-in" data-aos-delay="100">
+            <div class="card custom-card">
+              <img src="path/to/image1.jpg" class="card-img-top" alt="Contact 1">
               <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="buy-btn">Go somewhere</a>
+                <h5 class="card-title">Contact 1</h5>
+                <p class="card-text">Details about how to contact us via this method.</p>
+                <a href="#" class="btn btn-primary">Contact Us</a>
               </div>
             </div>
-          </div><!-- End Pricing Item -->
-          <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="300">
-            <div class="card" style="width: 18rem;">
-              <img src="..." class="card-img-top" alt="...">
+          </div><!-- End Contact Item -->
+
+          <div class="col" data-aos="zoom-in" data-aos-delay="200">
+            <div class="card custom-card">
+              <img src="path/to/image2.jpg" class="card-img-top" alt="Contact 2">
               <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="buy-btn">Go somewhere</a>
+                <h5 class="card-title">Contact 2</h5>
+                <p class="card-text">Details about how to contact us via this method.</p>
+                <a href="#" class="btn btn-primary">Contact Us</a>
               </div>
             </div>
-          </div><!-- End Pricing Item -->
+          </div><!-- End Contact Item -->
+
+          <div class="col" data-aos="zoom-in" data-aos-delay="300">
+            <div class="card custom-card">
+              <img src="path/to/image3.jpg" class="card-img-top" alt="Contact 3">
+              <div class="card-body">
+                <h5 class="card-title">Contact 3</h5>
+                <p class="card-text">Details about how to contact us via this method.</p>
+                <a href="#" class="btn btn-primary">Contact Us</a>
+              </div>
+            </div>
+          </div><!-- End Contact Item -->
 
         </div>
-
       </div>
 
-    </section><!-- /Pricing Section -->
+    </section>
+
     <!-- Contact Section -->
     <section id="contact" class="contact section">
-
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
         <h2>Contact</h2>
@@ -215,7 +213,6 @@
         <div class="row gy-4">
 
           <div class="col-lg-5">
-
             <div class="info-wrap">
               <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="200">
                 <i class="bi bi-geo-alt flex-shrink-0"></i>
@@ -285,7 +282,8 @@
 
       </div>
 
-    </section><!-- /Contact Section -->
+    </section>
+    <!-- /Contact Section -->
 
   </main>
   {{--footer--}}

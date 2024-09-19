@@ -36,23 +36,20 @@ class BeritaController extends Controller
     {
 
         $validasi = $request->validate([
-            'gambar' => 'required|file|mimes:jpg,png,pdf|max:2048',
+            'gambar' => 'required|file|mimes:jpg,png,pdf',
             'judul' => 'required',
-            'isi' => 'required|file|mimes:jpg,png,pdf|max:2048'
+            'isi' => 'required'
         ]);
         $gambar = $request->file('gambar');
         $gambar_ekstensi = $gambar->extension();
         $nama_gambar = date('YmdHis') . "." . $gambar_ekstensi;
         $gambar->move(public_path('gambar'), $nama_gambar);
 
-        $isi = $request->file('isi');
-        $isi_ekstensi = $isi->extension();
-        $nama_isi = date('YmdHis') . "." . $isi_ekstensi;
-        $isi->move(public_path('isi'), $nama_isi);
+
         $Data = ([
             'gambar' => $nama_gambar,
             'judul' => $request->input('judul'),
-            'isi' => $nama_isi
+            'isi' => $request->input('isi')
         ]);
         Berita::create($Data);
         return redirect('/berita')->with('success', 'Berita berhasil ditambahkan.');
@@ -92,17 +89,15 @@ class BeritaController extends Controller
         $nama_gambar = date('YmdHis') . "." . $gambar_ekstensi;
         $gambar->move(public_path('gambar'), $nama_gambar);
 
-        $isi = $request->file('isi');
-        $isi_ekstensi = $isi->extension();
-        $nama_isi = date('YmdHis') . "." . $isi_ekstensi;
-        $isi->move(public_path('isi'), $nama_isi);
+
         $Data = ([
             'gambar' => $nama_gambar,
             'judul' => $request->input('judul'),
-            'isi' => $nama_isi
+            'isi' => $request->input('isi')
         ]);
         $beritas = Berita::findOrFail($id);
-        Berita::update($Data);
+        $beritas->update();
+        // Berita::update($Data);
         return redirect('/berita')->with('success', 'Berita berhasil ditambahkan.');
     }
 

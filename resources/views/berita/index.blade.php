@@ -86,7 +86,6 @@
       <!-- /.sidebar -->
     </aside>
     <div class="content-wrapper">
-
       <section class="content">
         <div class="container-fluid">
           <nav class="navbar navbar-light bg-light">
@@ -106,9 +105,9 @@
                 <div class="card-header">
                   <h2 class="card-title">BERITA</h2>
                   <div class="card-tools">
-                    <button>
-                      <a href="{{ route('berita.create') }}" class="btn btn-primary" type="submit">Tambah</a>
-                    </button>
+
+                    <a href="{{ route('berita.create') }}" class="btn btn-primary" type="submit">Tambah</a>
+
                   </div>
                 </div>
                 <!-- /.card-header -->
