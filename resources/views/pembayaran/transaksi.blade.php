@@ -12,17 +12,19 @@
           </tr>
       </thead>
       <tbody class="table-group-divider">
+          @foreach ($transaksis as $transaksi)
           <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <td>{{ $transaksi->id_transaksi }}</td>
+              <td>{{ $transaksi->santri->nama }}</td> <!-- Ambil nama santri dari relasi -->
+              <td>{{ number_format($transaksi->total_bayar, 0, ',', '.') }}</td> <!-- Format jumlah pembayaran -->
+              <td>{{ $transaksi->jenis_pembayaran }}</td>
+              {{ $transaksi->waktu_transaksi}}
+              <td>{{ $transaksi->status_transaksi }}</td>
+              <td>{{ $transaksi->deskripsi }}</td>
               <td>
-                  <a href="">Lihat Detail</a>
+                  Aksi
               </td>
           </tr>
+          @endforeach
       </tbody>
   </table>

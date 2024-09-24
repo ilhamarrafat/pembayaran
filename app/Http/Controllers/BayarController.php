@@ -23,30 +23,50 @@ class BayarController extends Controller
      */
     public function index(Request $request)
     {
-
         $pagination = 5;
+
         // Mendapatkan data santri yang sedang login
         $santri = Auth::user()->santri;
-        // Ambil semua ID tagihan yang sudah dibayar oleh santri
-        $paidTagihanIds = transaksi::where('Id_santri', $santri->Id_santri)
-            ->where('status_transaksi', 'paid')
-            ->pluck('Id_tagihan');
 
-        // Mendapatkan tagihan yang sesuai dengan kelas dan tingkat santri, dan belum dibayar
-        $tagihan = tagihan::where('id_kelas', $santri->id_kelas)
+        if (!$santri) {
+            return redirect()->back()->withErrors(['error' => 'Santri not found for the logged-in user.']);
+        }
+
+        // Ambil semua tagihan yang sudah dibayar oleh santri tersebut
+        $paidTagihan = Transaksi::where('Id_santri', $santri->Id_santri)
+            ->where('status_transaksi', 'paid')
+            ->with('tagihan') // Eager load tagihan
+            ->get();
+
+        // Mendapatkan tagihan yang belum dibayar berdasarkan kelas dan tingkat santri
+        $tagihan = Tagihan::where('id_kelas', $santri->id_kelas)
             ->where('id_tingkat', $santri->id_tingkat)
-            ->whereNotIn('id', $paidTagihanIds) // Filter tagihan yang belum dibayar
             ->orderBy('created_at', 'desc')
             ->paginate($pagination);
+        // dd($tagihan, $santri);
+        // Mendapatkan pembayaran yang sudah dibayar
+        $pembayaran = Transaksi::where('Id_santri', $santri->Id_santri)
+            ->where('status_transaksi', 'paid')
+            ->get();
 
-        return view('santri.pembayaran', compact('tagihan', 'santri'))
+        // Mengembalikan view dengan data yang dibutuhkan
+        return view('santri.pembayaran', compact('tagihan', 'santri', 'paidTagihan'))
             ->with('i', ($request->input('page', 1) - 1) * $pagination);
     }
+
+
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create() {}
+    public function create()
+    {
+        $transaksi = transaksi::all()->map(function ($transaksi) {
+            $transaksi->waktu_transaksi = new \Carbon\Carbon($transaksi->waktu_transaksi);
+            return $transaksi;
+        });
+        return view('santri.cekout', compact('snapToken', 'transaksi'));
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -67,7 +87,8 @@ class BayarController extends Controller
         $transaksi->total_bayar = $totalBayar;
         $transaksi->status_transaksi = 'unpaid';
         $transaksi->waktu_transaksi = Carbon::now();
-        // $transaksi->Id_tagihan = $Id_tagihan;
+        $order_id = 'BAYAR--' . uniqid(); // Membuat order_id unik
+        $transaksi->order_id = $order_id;
         $transaksi->save();
 
         // Set your Merchant Server Key
@@ -79,11 +100,11 @@ class BayarController extends Controller
         \Midtrans\Config::$is3ds = true;
 
         // Menggunakan ID transaksi yang baru saja disimpan sebagai order_id
-        // $transaksi = 'BAYAR-' .
+        // $order_id = 'BAYAR-' . $transaksi->id . '-' . time();
 
         $params = array(
             'transaction_details' => array(
-                'order_id' => $transaksi->id,
+                'order_id' => $order_id,
                 'gross_amount' => $totalBayar,
             ),
             'customer_details' => array(
@@ -106,15 +127,18 @@ class BayarController extends Controller
     {
         $serverKey = config('midtrans.Server_Key');
         $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
+
         if ($hashed == $request->signature_key) {
             if ($request->transaction_status == 'capture') {
-                $transaksi = transaksi::find($request->order_id);
-                // $transaksi->update([
-                //     'status_transaksi' => 'paid',
-                //     'waktu_transaksi' => now()
-                // ]);
-                $transaksi->status_transaksi = 'paid';
-                $transaksi->save();
+                // Cari transaksi berdasarkan order_id yang dikirim dari Midtrans
+                $transaksi = transaksi::where('order_id', $request->order_id)->first();
+
+                // Jika transaksi ditemukan, ubah statusnya menjadi 'paid'
+                if ($transaksi) {
+                    $transaksi->status_transaksi = 'paid';
+                    $transaksi->waktu_transaksi = now();
+                    $transaksi->save();
+                }
             }
         }
     }

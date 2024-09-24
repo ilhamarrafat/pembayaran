@@ -45,7 +45,7 @@ class Santri extends Model
     }
     public function transaksi()
     {
-        return $this->hasMany(transaksi::class);
+        return $this->hasMany(transaksi::class, 'Id_santri');
     }
     public function tagihan()
     {

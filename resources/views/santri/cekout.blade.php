@@ -163,6 +163,8 @@
                         alert("payment success!");
                         console.log(result);
 
+                        // Redirect ke halaman /bayar/{santri} setelah transaksi berhasil
+                        window.location.href = "/bayar/{{ Auth::user()->santri->Id_santri }}";
                     },
                     onPending: function(result) {
                         alert("waiting for your payment!");

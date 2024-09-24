@@ -91,6 +91,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard/superadmin/pembayaran', [PaymentController::class, 'index'])->name('pembayaran');
     Route::get('/pembayaran/create', [PaymentController::class, 'create'])->name('tagihan.create');
     Route::post('/superadmin/pembayaran', [PaymentController::class, 'store'])->name('tagihan.store');
+    Route::get('/pembayaran/{Id_tagihan}/edit', [PaymentController::class, 'edit'])->name('tagihan.edit');
+    Route::put('/pembayaran/{Id_tagihan}', [PaymentController::class, 'update'])->name('tagihan.update');
+    Route::delete('/pembayaran/{Id_tagihan}', [PaymentController::class, 'destroy'])->name('tagihan.destroy');
     Route::get('/pembayaran/export/excel', [PaymentController::class, 'export_excel'])->name('export');
     // Route::get('/superadmin/pembayaran/{Id_tagihan}/{Id_santri}', [PaymentController::class, 'show'])->name('pembayaran.admin.show');
   });

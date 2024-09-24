@@ -135,11 +135,7 @@
           </div>
 
           <div class="col-md-12 mt-3">
-
             <div class="col-md-5 mb-10">
-
-
-
             </div>
             <div class="card ">
               <div class="card-header border-success">
@@ -149,42 +145,68 @@
                   </b>
                 </h4>
                 <div>
-                  <form class="row g-4">
+                  <form class="row g-4" action="{{ route('pembayaran.index') }}" method="GET">
+                    <!-- Pencarian berdasarkan nama tagihan -->
                     <div class="col-auto">
-                      <input class="form-control" type="text" placeholder="Search" aria-label="default input example">
+                      <input class="form-control" type="text" name="search" placeholder="Cari Nama Tagihan" aria-label="Search" value="{{ request('search') }}">
                     </div>
-                    <button class="btn btn-primary" type="submit">
-                      Cari
-                    </button>
-                  </form>
-                  <div class="button">
-                    <a class="btn btn-success mb-2" href="{{route('export')}}">Cetak Excel</a>
-                  </div>
-                  <div class="float-right">
-                    <a class="btn btn-info" href="{{route('tagihan.create')}}">
-                      Buat Tagihan
-                    </a>
-                  </div>
-                </div>
 
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <div class="table-responsive">
-                  @include('pembayaran.tagihan')
+                    <!-- Filter berdasarkan kelas -->
+                    <div class="col-auto">
+                      <select class="form-control" name="kelas">
+                        <option value="">Filter Kelas</option>
+                        @foreach($kelas as $kls)
+                        <option value="{{ $kls->id }}" {{ request('kelas') == $kls->id ? 'selected' : '' }}>
+                          {{ $kls->nama_kelas }}
+                        </option>
+                        @endforeach
+                      </select>
+                    </div>
+
+                    <!-- Filter berdasarkan tingkat -->
+                    <div class="col-auto">
+                      <select class="form-control" name="tingkat">
+                        <option value="">Filter Tingkat</option>
+                        @foreach($tingkat as $tkt)
+                        <option value="{{ $tkt->id }}" {{ request('tingkat') == $tkt->id ? 'selected' : '' }}>
+                          {{ $tkt->nama_tingkat }}
+                        </option>
+                        @endforeach
+                      </select>
+                    </div>
+
+                    <!-- Tombol Cari dan Reset -->
+                    <div class="col-auto">
+                      <button class="btn btn-primary" type="submit">Cari</button>
+                    </div>
+                    <div class="col-auto">
+                      <a href="{{ route('pembayaran.index') }}" class="btn btn-secondary">Reset Filter</a>
+                    </div>
+                  </form>
+
+                  <!-- Tombol Export dan Buat Tagihan -->
+                  <div class="mt-3">
+                    <a class="btn btn-success mb-2" href="{{ route('tagihan.create')}}">Buat Tagihan</a>
+                  </div>
+
                 </div>
-                <!-- /.table-responsive -->
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <div class="table-responsive">
+                    @include('pembayaran.tagihan')
+                  </div>
+                  <!-- /.table-responsive -->
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer clearfix">
+                  <a href="javascript:void(0)" class="btn btn-sm btn-success float-right">View All Orders</a>
+                </div>
+                <!-- /.card-footer -->
               </div>
-              <!-- /.card-body -->
-              <div class="card-footer clearfix">
-                <a href="javascript:void(0)" class="btn btn-sm btn-success float-right">View All Orders</a>
-              </div>
-              <!-- /.card-footer -->
             </div>
           </div>
         </div>
       </div>
-    </div>
-    @include('dadmin.style')
-    @include('dadmin.script')
+      @include('dadmin.style')
+      @include('dadmin.script')
 </body>

@@ -28,11 +28,15 @@ class transaksi extends Model
 
     public function santri()
     {
-        return $this->belongsTo(Santri::class);
+        return $this->belongsTo(Santri::class, 'Id_santri');
     }
 
     public function bayar()
     {
         return $this->hasMany(Bayar::class);
+    }
+    public function tagihan()
+    {
+        return $this->belongsTo(Tagihan::class, 'Id_tagihan', 'Id_tagihan');
     }
 }

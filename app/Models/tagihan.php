@@ -12,6 +12,7 @@ class Tagihan extends Model
     protected $primaryKey = 'Id_tagihan';
 
     protected $fillable = [
+        'Id_santri',
         'id_kelas',
         'id_tingkat',
         'nama_tagihan',
@@ -37,6 +38,10 @@ class Tagihan extends Model
     }
     public function santri()
     {
-        return $this->belongsTo(Santri::class, 'id_santri');
+        return $this->belongsTo(Santri::class, 'Id_santri');
+    }
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class, 'Id_tagihan', 'Id_tagihan');
     }
 }

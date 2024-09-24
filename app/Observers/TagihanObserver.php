@@ -3,7 +3,8 @@
 namespace App\Observers;
 
 use App\Models\Tagihan;
-use App\Models\Bayar;
+use App\Models\transaksi;
+use Illuminate\Support\Facades\Log;
 
 class TagihanObserver
 {
@@ -12,15 +13,26 @@ class TagihanObserver
      */
     public function created(Tagihan $tagihan): void
     {
-        // Buat data pembayaran baru
-        $bayar = Tagihan::create([
-            'nominal_bayar' => $tagihan->nominal_bayar,
+        // Pastikan Id_santri tidak null
+        if (is_null($tagihan->Id_santri)) {
+            Log::error('Id_santri is null when creating transaction');
+            return; // Mungkin Anda ingin melempar exception di sini
+        }
+
+        // Buat data transaksi baru menggunakan model Transaksi
+        $transaksi = transaksi::create([
+            'nominal_bayar' => $tagihan->nominal_tagihan,
             'Id_santri' => $tagihan->Id_santri,
+            'waktu_transaksi' => now(),
+            'status_transaksi' => 'unpaid',
+            'deskripsi' => $tagihan->nama_tagihan,
         ]);
 
-        // Isi id_bayar di tabel tagihan
-        $tagihan->Id_bayar = $bayar->Id_bayar;
+        // Update tagihan dengan id_transaksi yang baru dibuat (jika diperlukan)
+        $tagihan->id_transaksi = $transaksi->id_transaksi;
+        $tagihan->save(); // Simpan perubahan
     }
+
 
     /**
      * Handle the Tagihan "updated" event.
