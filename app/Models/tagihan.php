@@ -32,16 +32,17 @@ class Tagihan extends Model
         return $this->belongsTo(Tingkat::class);
     }
 
-    public function bayar()
-    {
-        return $this->hasMany(Bayar::class);
-    }
     public function santri()
     {
         return $this->belongsTo(Santri::class, 'Id_santri');
     }
     public function transaksi()
     {
-        return $this->hasMany(Transaksi::class, 'Id_tagihan', 'Id_tagihan');
+        return $this->belongsToMany(Transaksi::class, 'transaksi_tagihan', 'id_tagihan', 'id_transaksi');
+    }
+    public function scopeForSantri($query, Santri $santri)
+    {
+        return $query->where('id_kelas', $santri->id_kelas)
+            ->where('id_tingkat', $santri->id_tingkat);
     }
 }

@@ -49,7 +49,11 @@ class Santri extends Model
     }
     public function tagihan()
     {
-        return $this->hasMany(Tagihan::class, 'id_kelas', 'id_kelas')
-            ->where('id_tigkat', $this->id_tigkat);
+        return $this->hasMany(Tagihan::class, 'id_kelas', 'id_kelas');
+    }
+
+    public function getTagihanForSantriAttribute()
+    {
+        return $this->tagihan()->where('id_tingkat', $this->id_tingkat)->get();
     }
 }

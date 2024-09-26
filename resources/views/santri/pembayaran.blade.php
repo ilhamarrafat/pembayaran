@@ -121,7 +121,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach($tagihan as $item)
+                                                        @foreach($unpaidTagihan as $item)
                                                         <tr>
                                                             <td>{{ ++$i }}</td>
                                                             <td>{{ $item->nama_tagihan }}</td>
@@ -155,6 +155,7 @@
                                                     <button type="submit" class="btn btn-primary btn-block mt-4">Bayar Sekarang</button>
                                                 </form>
                                             </div>
+                                            {{ $unpaidTagihan->links() }}
                                         </div>
                                         <div class="card-footer clearfix">
                                             <a href="javascript:void(0)" class="btn btn-sm btn-success float-right">View All Orders</a>
@@ -164,51 +165,7 @@
 
                                 <!-- Tagihan Santri -->
                                 <div class="col-md-12 mt-3">
-                                    <div class="card">
-                                        <div class="card-header border-success">
-                                            <h4>
-                                                <b>TAGIHAN SANTRI</b>
-                                            </h4>
-                                            <form class="row g-4" action="{{ route('pembayaran.index') }}" method="GET">
-                                                <div class="col-auto">
-                                                    <a href="{{ route('pembayaran.index') }}" class="btn btn-secondary">Reset Filter</a>
-                                                </div>
-                                            </form>
-                                            <div class="mt-3">
-                                                <a class="btn btn-success" href="{{ route('tagihan.create') }}">Buat Tagihan</a>
-                                            </div>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="table-responsive">
-                                                <!-- Tabel Tagihan Sudah Dibayar -->
-                                                <h5 class="mt-5">Tagihan Sudah Dibayar</h5>
-                                                <div class="table-responsive">
-                                                    <table class="table table-striped table-bordered" id="paid-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>No</th>
-                                                                <th>Nama Tagihan</th>
-                                                                <th>Nominal</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach($paidTagihan as $key => $pembayaranItem)
-                                                            <tr>
-                                                                <td>{{ $key + 1 }}</td>
-                                                                <td>{{ $pembayaranItem->deskripsi }}</td>
-                                                                <td>Rp.{{ number_format($pembayaranItem->total_bayar, 0, ',', '.') }}</td>
-                                                            </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer clearfix">
-                                            <a href="javascript:void(0)" class="btn btn-sm btn-success float-right">View All Orders</a>
-                                        </div>
-                                    </div>
-                                    {{ $tagihan->links() }}
+                                    @include('santri.dibayar')
                                 </div>
                             </div>
                             <script>

@@ -106,6 +106,9 @@
                                     <div class="mb-3">
                                         <label class="form-label">Nama Tagihan</label>
                                         <input type="text" class="form-control" id="nama_tagihan" name="nama_tagihan">
+                                        @error('nama_tagihan')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Nominal Tagihan</label>

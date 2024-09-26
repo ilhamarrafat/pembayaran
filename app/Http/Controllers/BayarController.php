@@ -24,33 +24,30 @@ class BayarController extends Controller
     public function index(Request $request)
     {
         $pagination = 5;
-
         // Mendapatkan data santri yang sedang login
-        $santri = Auth::user()->santri;
-
-        if (!$santri) {
-            return redirect()->back()->withErrors(['error' => 'Santri not found for the logged-in user.']);
-        }
-
-        // Ambil semua tagihan yang sudah dibayar oleh santri tersebut
-        $paidTagihan = Transaksi::where('Id_santri', $santri->Id_santri)
+        $santri = Santri::find(Auth::user()->santri->Id_santri);
+        // Ambil data tagihan yang sudah dibayar
+        $paidTagihan = Transaksi::with('tagihan') // Eager loading relasi tagihan
+            ->where('Id_santri', $santri->Id_santri)
             ->where('status_transaksi', 'paid')
-            ->with('tagihan') // Eager load tagihan
-            ->get();
+            ->paginate(10);
 
-        // Mendapatkan tagihan yang belum dibayar berdasarkan kelas dan tingkat santri
-        $tagihan = Tagihan::where('id_kelas', $santri->id_kelas)
+        $unpaidTagihan = Tagihan::where('id_kelas', $santri->id_kelas)
             ->where('id_tingkat', $santri->id_tingkat)
-            ->orderBy('created_at', 'desc')
-            ->paginate($pagination);
-        // dd($tagihan, $santri);
-        // Mendapatkan pembayaran yang sudah dibayar
-        $pembayaran = Transaksi::where('Id_santri', $santri->Id_santri)
-            ->where('status_transaksi', 'paid')
-            ->get();
-
+            ->whereNotIn('Id_tagihan', function ($query) use ($santri) {
+                $query->select('id_tagihan') // Mengambil id_tagihan dari tabel pivot
+                    ->from('transaksi_tagihan') // Pastikan ini merujuk ke tabel pivot
+                    ->whereIn('id_transaksi', function ($subQuery) use ($santri) {
+                        $subQuery->select('id_transaksi')
+                            ->from('transaksi')
+                            ->where('Id_santri', $santri->Id_santri)
+                            ->where('status_transaksi', 'paid');
+                    });
+            })
+            ->orderBy('waktu_tagihan', 'desc')
+            ->paginate(10);
         // Mengembalikan view dengan data yang dibutuhkan
-        return view('santri.pembayaran', compact('tagihan', 'santri', 'paidTagihan'))
+        return view('santri.pembayaran', compact('unpaidTagihan', 'santri', 'paidTagihan'))
             ->with('i', ($request->input('page', 1) - 1) * $pagination);
     }
 
@@ -73,23 +70,102 @@ class BayarController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'total_bayar' => 'required|numeric',
+            'dump_tagihan' => 'required|string',
+            'deskripsi' => 'required|string'
+        ]);
+
         $totalBayar = $request->input('total_bayar');
         $Id_tagihan = json_decode($request->input('dump_tagihan'), true);
         $idSantri = Auth::user()->santri->Id_santri;
-        //     if (!empty($Id_tagihan) && is_array($Id_tagihan)) {
 
-        $Id_tagihan = (int) $Id_tagihan[0];
+        // Cek jika tagihan valid
+        if (empty($Id_tagihan) || !is_array($Id_tagihan)) {
+            return back()->withErrors(['dump_tagihan' => 'Tagihan tidak valid atau tidak ditemukan']);
+        }
+
         // Membuat transaksi baru
-        $transaksi = new transaksi();
+        $transaksi = new Transaksi();
         $transaksi->jenis_pembayaran = "Pembayaran Tagihan";
         $transaksi->Id_santri = $idSantri;
         $transaksi->deskripsi = $request->deskripsi;
         $transaksi->total_bayar = $totalBayar;
         $transaksi->status_transaksi = 'unpaid';
         $transaksi->waktu_transaksi = Carbon::now();
-        $order_id = 'BAYAR--' . uniqid(); // Membuat order_id unik
-        $transaksi->order_id = $order_id;
+        $transaksi->order_id = 'BAYAR-' . uniqid(); // Membuat order_id unik
+
+        // Simpan transaksi agar id_transaksi diisi
         $transaksi->save();
+
+        // Menghubungkan transaksi dengan tagihan
+        foreach ($Id_tagihan as $id_tagihan) {
+            // Pastikan ID tagihan valid sebelum menghubungkan
+            if (Tagihan::find($id_tagihan)) {
+                $transaksi->tagihan()->attach($id_tagihan);
+            } else {
+                return back()->withErrors(['tagihan' => 'Tagihan tidak ditemukan: ' . $id_tagihan]);
+            }
+        }
+
+        // Menyiapkan detail item untuk Midtrans
+        $itemDetails = [];
+        $tagihanList = Tagihan::whereIn('Id_tagihan', $Id_tagihan)->get();
+
+        foreach ($tagihanList as $tagihan) {
+            $itemDetails[] = [
+                'id' => $tagihan->Id_tagihan,
+                'price' => $tagihan->nominal_tagihan, // Nominal per tagihan
+                'quantity' => 1, // Jumlah item (bisa diatur sesuai kebutuhan)
+                'name' => $tagihan->nama_tagihan // Nama tagihan yang dibayar
+            ];
+        }
+
+        // Konfigurasi Midtrans
+        \Midtrans\Config::$serverKey = config('midtrans.Server_Key');
+        \Midtrans\Config::$isProduction = false;
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = true;
+
+        // Parameter untuk Midtrans
+        $params = array(
+            'transaction_details' => array(
+                'order_id' => $transaksi->order_id,
+                'gross_amount' => $totalBayar,
+            ),
+            'customer_details' => array(
+                'first_name' => Auth::user()->santri->nama,
+                'last_name' => '',
+                'email' => Auth::user()->email,
+                'phone' => '08111222333',
+            ),
+            'item_details' => $itemDetails
+        );
+
+        // Mendapatkan snap token
+        $snapToken = \Midtrans\Snap::getSnapToken($params);
+
+        // Kembalikan tampilan checkout
+        return view('santri.cekout', compact('snapToken', 'transaksi'));
+        if (!$transaksi->id_transaksi) {
+            return back()->withErrors(['transaksi' => 'Transaksi tidak disimpan dengan benar.']);
+        }
+
+        // Menghubungkan transaksi dengan tagihan
+        foreach ($Id_tagihan as $id_tagihan) {
+            $transaksi->tagihan()->attach($id_tagihan);
+        }
+        $itemDetails = [];
+        $tagihanList = Tagihan::whereIn('Id_tagihan', $Id_tagihan)->get();
+
+        foreach ($tagihanList as $tagihan) {
+            $itemDetails[] = [
+                'id' => $tagihan->Id_tagihan,
+                'price' => $tagihan->nominal_tagihan, // Nominal per tagihan
+                'quantity' => 1, // Jumlah item (bisa diatur sesuai kebutuhan)
+                'name' => $tagihan->nama_tagihan // Nama tagihan yang dibayar
+            ];
+        }
 
         // Set your Merchant Server Key
         \Midtrans\Config::$serverKey = config('midtrans.Server_Key');
@@ -104,7 +180,7 @@ class BayarController extends Controller
 
         $params = array(
             'transaction_details' => array(
-                'order_id' => $order_id,
+                'order_id' => $transaksi->order_id,
                 'gross_amount' => $totalBayar,
             ),
             'customer_details' => array(
@@ -113,6 +189,7 @@ class BayarController extends Controller
                 'email' => Auth::user()->email,
                 'phone' => '08111222333',
             ),
+            'item_details' => $itemDetails
         );
 
         $snapToken = \Midtrans\Snap::getSnapToken($params);
@@ -129,7 +206,7 @@ class BayarController extends Controller
         $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
 
         if ($hashed == $request->signature_key) {
-            if ($request->transaction_status == 'capture') {
+            if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
                 // Cari transaksi berdasarkan order_id yang dikirim dari Midtrans
                 $transaksi = transaksi::where('order_id', $request->order_id)->first();
 

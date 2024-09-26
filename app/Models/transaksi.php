@@ -9,13 +9,13 @@ class transaksi extends Model
 {
     use HasFactory;
     protected $table = 'transaksi';
-    protected $primaryKey = 'id_transaksi'; // Tentukan kolom kunci primer
-    public $incrementing = false; // Jika kolom kunci primer bukan auto-increment
+    protected $primaryKey = 'id_transaksi'; // Jika kolom kunci primer bukan auto-increment
     protected $keyType = 'string';
 
     protected $fillable = [
         'id_transaksi',
         'Id_santri',
+        'Id_tagihan',
         'total_bayar',
         'deskripsi',
         'jenis_pembayaran',
@@ -31,12 +31,8 @@ class transaksi extends Model
         return $this->belongsTo(Santri::class, 'Id_santri');
     }
 
-    public function bayar()
-    {
-        return $this->hasMany(Bayar::class);
-    }
     public function tagihan()
     {
-        return $this->belongsTo(Tagihan::class, 'Id_tagihan', 'Id_tagihan');
+        return $this->belongsToMany(Tagihan::class, 'transaksi_tagihan', 'id_transaksi', 'id_tagihan');
     }
 }
