@@ -48,7 +48,9 @@ class superadminController extends Controller
         $user = User::all();
         $tagihan = Tagihan::all();
         $santri = Santri::all();
-        return view('superadmin.csantri', compact('user', 'tagihan', 'santri'));
+        $kelas = Kelas::all();
+        $tingkat = tingkat::all();
+        return view('superadmin.csantri', compact('user', 'tagihan', 'santri', 'kelas', 'tingkat'));
     }
 
     /**
@@ -56,40 +58,42 @@ class superadminController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'user_id',
-            'Id_tagihan',
+        // Validasi input
+        $request->validate([
             'foto' => 'required|file|mimes:jpg,png,pdf|max:2048',
-            'nama',
-            'Jenis_kelamin',
-            'Tmp_lhr',
-            'Tgl_lhr',
-            'alamat',
-            'Thn_masuk',
-            'Thn_keluar',
-            'id_kelas',
-            'id_tingkat'
-
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'telepon' => 'required',
+            'Jenis_kelamin' => 'required',
+            'Tmp_lhr' => 'required|string|max:255',
+            'Tgl_lhr' => 'required|date',
+            'alamat' => 'required|string',
+            'Thn_masuk' => 'required|date',
+            'Thn_keluar' => 'nullable|date',
+            'id_kelas' => 'required|integer',
+            'id_tingkat' => 'required|integer'
         ]);
-        // dd($request->all());
-        $tingkat = new Santri;
-        $tingkat->tingkat = $request->tingkat;
+
+        // Upload foto
         $foto = $request->file('foto');
         $foto_ekstensi = $foto->extension();
         $nama_foto = date('YmdHis') . "." . $foto_ekstensi;
-        $foto->move(public_path('foto'), $nama_foto);
-        // Menyimpan file di storage/app/public/images
+
+        // Simpan foto ke dalam folder 'storage/app/public/foto'
+        $foto->storeAs('public/foto', $nama_foto);
+
+        // Buat user baru
         $user = User::create([
-            'name' => $request->nama,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role_id' => 3,
+            'name' => $request->input('nama'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
+            'role_id' => 3, // Peran santri
         ]);
 
-        $data = ([
+        // Buat data santri baru
+        Santri::create([
             'user_id' => $user->id,
-            'Id_tagihan' => $request->input('Id_tagihan'),
-            'foto' => $nama_foto,
+            'foto' => 'foto/' . $nama_foto, // Simpan path foto ke database
             'nama' => $request->input('nama'),
             'Jenis_kelamin' => $request->input('Jenis_kelamin'),
             'Tmp_lhr' => $request->input('Tmp_lhr'),
@@ -98,12 +102,16 @@ class superadminController extends Controller
             'Thn_masuk' => $request->input('Thn_masuk'),
             'Thn_keluar' => $request->input('Thn_keluar'),
             'id_kelas' => $request->input('id_kelas'),
-            'id_tingkat' => $request->input('id_tingkat')
+            'id_tingkat' => $request->input('id_tingkat'),
+            'telepon' => $request->input('telepon')
         ]);
-        // dd($data);
-        Santri::create($data);
-        return redirect('/superadmin/data')->with('success', 'Santri berhasil ditambahkan.');
+
+        // Redirect ke halaman data dengan pesan sukses
+        return redirect()->route('data')
+            ->with('success', 'Santri berhasil ditambahkan.');
     }
+
+
 
     /**
      * Display the specified resource.
@@ -172,7 +180,7 @@ class superadminController extends Controller
 
         // $santri->update($request->except(['_token', '_method']));
 
-        return redirect()->route('data', compact('santri', 'user', 'tagihan', 'kelas', 'tingkat'))
+        return redirect()->route('/dashboard/superadmin/data', compact('santri', 'user', 'tagihan', 'kelas', 'tingkat'))
             ->with('success', 'Santri updated successfully.');
     }
 

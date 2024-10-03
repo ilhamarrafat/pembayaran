@@ -8,12 +8,16 @@ use App\Models\tagihan;
 use App\Models\transaksi;
 use App\Models\User;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use GuzzleHttp\Promise\Create;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Midtrans\Snap;
 use Midtrans\Config;
+
 
 
 class BayarController extends Controller
@@ -30,13 +34,13 @@ class BayarController extends Controller
         $paidTagihan = Transaksi::with('tagihan') // Eager loading relasi tagihan
             ->where('Id_santri', $santri->Id_santri)
             ->where('status_transaksi', 'paid')
-            ->paginate(10);
+            ->paginate(5);
 
-        $unpaidTagihan = Tagihan::where('id_kelas', $santri->id_kelas)
+        $unpaidTagihan = Tagihan::where('id_kelas', $santri->id_kelas) // Pastikan ini merujuk ke id_kelas yang benar
             ->where('id_tingkat', $santri->id_tingkat)
             ->whereNotIn('Id_tagihan', function ($query) use ($santri) {
-                $query->select('id_tagihan') // Mengambil id_tagihan dari tabel pivot
-                    ->from('transaksi_tagihan') // Pastikan ini merujuk ke tabel pivot
+                $query->select('id_tagihan')
+                    ->from('transaksi_tagihan')
                     ->whereIn('id_transaksi', function ($subQuery) use ($santri) {
                         $subQuery->select('id_transaksi')
                             ->from('transaksi')
@@ -45,7 +49,8 @@ class BayarController extends Controller
                     });
             })
             ->orderBy('waktu_tagihan', 'desc')
-            ->paginate(10);
+            ->paginate(5);
+
         // Mengembalikan view dengan data yang dibutuhkan
         return view('santri.pembayaran', compact('unpaidTagihan', 'santri', 'paidTagihan'))
             ->with('i', ($request->input('page', 1) - 1) * $pagination);
@@ -218,5 +223,39 @@ class BayarController extends Controller
                 }
             }
         }
+    }
+    public function downloadPdf($id)
+    {
+        // Ambil data transaksi dan relasi tagihan
+        $transaksi = Transaksi::with('tagihan')->findOrFail($id);
+
+        // Siapkan data untuk view PDF
+        $data = [
+            'transaksi' => $transaksi,
+            'santri' => $transaksi->santri, // relasi ke model Santri
+            'tagihan' => $transaksi->tagihan,
+        ];
+
+        // Render HTML dari view untuk PDF
+        $html = view('pembayaran.cetak', $data)->render();
+
+        // Setel opsi dompdf
+        $options = new Options();
+        $options->set('defaultFont', 'Arial'); // Anda dapat mengubah font default sesuai kebutuhan
+
+        // Inisialisasi dompdf
+        $dompdf = new Dompdf($options);
+
+        // Load HTML ke dalam dompdf dan generate PDF
+        $dompdf->loadHtml($html);
+
+        // (Optional) Set ukuran kertas dan orientasi
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Render PDF
+        $dompdf->render();
+
+        // Output file PDF ke browser untuk diunduh
+        return $dompdf->stream('tagihan_' . $transaksi->id_transaksi . '.pdf', ['Attachment' => true]); // 'Attachment' => true untuk download
     }
 }

@@ -9,12 +9,13 @@ class tingkat extends Model
 {
     use HasFactory;
     protected $table = 'tingkat';
+    protected $primaryKey = 'id_tingkat';
     protected $fillable = [
         'tingkat'
     ];
     public function santri()
     {
-        return $this->hasMany(Santri::class);
+        return $this->hasMany(Santri::class, 'id_tingkat');
     }
 
     public function tagihan()

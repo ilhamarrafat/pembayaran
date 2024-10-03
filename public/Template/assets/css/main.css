@@ -2385,3 +2385,9 @@ iframe {
   box-shadow: 0 10px 20px rgba(255, 255, 255, 0.7);
   /* White shadow with transparency */
 }
+    .pagination-sm .page-link {
+      font-size: 10px;
+      /* Ukuran lebih kecil */
+      padding: 5px 8px;
+      /* Atur padding untuk tombol */
+    }

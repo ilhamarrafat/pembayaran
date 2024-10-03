@@ -55,7 +55,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{route('profile.santri')}}" class="nav-link active">
+                            <a href="{{route('profile_santri')}}" class="nav-link active">
                                 <i class="nav-icon far fa-address-card"></i>
                                 <p>
                                     Profile

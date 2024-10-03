@@ -34,7 +34,7 @@ class Tagihan extends Model
 
     public function santri()
     {
-        return $this->belongsTo(Santri::class, 'Id_santri');
+        return $this->belongsTo(Santri::class, 'Id_santri', 'Id_santri');
     }
     public function transaksi()
     {

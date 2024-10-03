@@ -111,86 +111,135 @@
                   @endif
                   @if ($message = Session::get('success'))
                   @endif
-                  <form method="POST" action="{{ route('santri.store')}}" enctype="multipart/form-data">
+                  <form method="POST" action="{{ route('csantri.store') }}" enctype="multipart/form-data">
                     @csrf
+
                     <strong class="mt-3">Upload Foto</strong>
                     <div class="input-group mb-3">
-                      <input type="file" placeholder="uploadfile" for="foto" name="foto" class="form-control" id="foto">
+                      <input type="file" name="foto" class="form-control" id="foto">
+                      @error('foto')
+                      <div class="text-danger">{{ $message }}</div>
+                      @enderror
                     </div>
-                    <!-- <div class="input-group mb-3">
-                      <label class="input-group-text col-md-3" for="user_id">Sebagai</label>
-                      <select class="form-select col-md-9" id="user_id" name="user_id">
-                        @foreach ($user as $user )
-                        <option value="{{$user->id}}">{{$user->name}}</option>
-                        @endforeach
-                      </select>
-                    </div>
-                    <div class="input-group mb-3">
-                      <label class="input-group-text col-md-3" for="Tagihan">user id</label>
-                      <select class="form-select col-md-9" id="Id_tagihan" name="Id_tagihan">
-                        @foreach ($tagihan as $tagihan )
-                        <option value="{{$tagihan->Id_tagihan}}">{{$tagihan->Id_tagihan}}</option>
-                        @endforeach
-                      </select>
-                    </div> -->
 
                     <div class="form-group mb-3">
                       <strong>Nama</strong>
-                      <input type="text" id="nama" name="nama" class="form-control" placeholder="Nama">
+                      <input type="text" id="nama" name="nama" class="form-control" placeholder="Masukkan Nama Lengkap" value="{{ old('nama') }}">
+                      @error('nama')
+                      <div class="text-danger">{{ $message }}</div>
+                      @enderror
                     </div>
+
                     <div class="form-group mb-3">
                       <strong>Email</strong>
-                      <input type="text" id="email" name="email" class="form-control" placeholder="Nama">
+                      <input type="text" id="email" name="email" class="form-control" placeholder="Masukkan Email" value="{{ old('email') }}">
+                      @error('email')
+                      <div class="text-danger">{{ $message }}</div>
+                      @enderror
                     </div>
+                    <div class="mb-3">
+                      <label for="password" class="form-label" value="{{ old('password') }}">Password</label>
+                      <input type=" password" class="form-control" name="password" required>
+                      @error('password')
+                      <div class="text-danger">{{ $message }}</div>
+                      @enderror
+                    </div>
+
+                    <div class="form-group mb-3">
+                      <strong>Telepon</strong>
+                      <input type="text" id="telepon" name="telepon" class="form-control" placeholder="Masukkan No Telepon" value="{{ old('telepon') }}">
+                      @error('telepon')
+                      <div class="text-danger">{{ $message }}</div>
+                      @enderror
+                    </div>
+
                     <strong>Jenis Kelamin</strong>
                     <div class="input-group mb-3">
                       <label class="input-group-text" for="inputGroupSelect01">Options</label>
                       <select class="form-select col-md-9" name="Jenis_kelamin" id="Jenis_kelamin">
-                        <option selected>Pilih</option>
-                        <option value="1">Laki-Laki</option>
-                        <option value="2">Perempuan</option>
+                        <option value="">Pilih</option>
+                        <option value="1" {{ old('Jenis_kelamin') == '1' ? 'selected' : '' }}>Laki-Laki</option>
+                        <option value="2" {{ old('Jenis_kelamin') == '2' ? 'selected' : '' }}>Perempuan</option>
                       </select>
+                      @error('Jenis_kelamin')
+                      <div class="text-danger">{{ $message }}</div>
+                      @enderror
                     </div>
+
                     <div class="form-group mb-3">
                       <strong>Tempat Lahir</strong>
-                      <input class="form-control" id="Tmp_lhr" name="Tmp_lhr" placeholder="Wonosobo"></input>
+                      <input class="form-control" id="Tmp_lhr" name="Tmp_lhr" placeholder="Wonosobo" value="{{ old('Tmp_lhr') }}">
+                      @error('Tmp_lhr')
+                      <div class="text-danger">{{ $message }}</div>
+                      @enderror
                     </div>
+
                     <strong>Tanggal Lahir</strong>
                     <div class="form-group mb-3">
-                      <input type="date" id="Tgl_lhr" name="Tgl_lhr" class="form-control" placeholder="Tahun">
+                      <input type="date" id="Tgl_lhr" name="Tgl_lhr" class="form-control" value="{{ old('Tgl_lhr') }}">
+                      @error('Tgl_lhr')
+                      <div class="text-danger">{{ $message }}</div>
+                      @enderror
                     </div>
+
                     <div class="form-group mb-3">
                       <strong>Alamat</strong>
-                      <textarea class="form-control " id="alamat" name="alamat" placeholder="Alamat"></textarea>
+                      <textarea class="form-control" id="alamat" name="alamat" placeholder="Alamat">{{ old('alamat') }}</textarea>
+                      @error('alamat')
+                      <div class="text-danger">{{ $message }}</div>
+                      @enderror
                     </div>
+
                     <div class="form-group mb-3">
                       <strong>Tahun Masuk</strong>
-                      <input type="date" id="Thn_masuk" name="Thn_masuk" class="form-control" placeholder="Tahun">
+                      <input type="date" id="Thn_masuk" name="Thn_masuk" class="form-control" value="{{ old('Thn_masuk') }}">
+                      @error('Thn_masuk')
+                      <div class="text-danger">{{ $message }}</div>
+                      @enderror
                     </div>
+
                     <div class="form-group mb-3">
                       <strong>Tahun Keluar</strong>
-                      <input type="date" id="Thn_keluar" name="Thn_keluar" class="form-control" placeholder="Tahun">
+                      <input type="date" id="Thn_keluar" name="Thn_keluar" class="form-control" value="{{ old('Thn_keluar') }}">
+                      @error('Thn_keluar')
+                      <div class="text-danger">{{ $message }}</div>
+                      @enderror
                     </div>
+
                     <div class="form-group mb-3">
-                      @foreach ($kelas as $kelas )
                       <strong>Kelas</strong>
-                      <input type="text" id="kelas" name="kelas" class="form-control" placeholder="kelas">
-                      @endforeach
+                      <select id="kelas" name="id_kelas" class="form-control">
+                        @foreach ($kelas as $kelasItem)
+                        <option value="{{ $kelasItem->id_kelas }}" {{ old('id_kelas') == $kelasItem->id_kelas ? 'selected' : '' }}>
+                          {{ $kelasItem->kelas }}
+                        </option>
+                        @endforeach
+                      </select>
+                      @error('id_kelas')
+                      <div class="text-danger">{{ $message }}</div>
+                      @enderror
                     </div>
+
                     <strong>Tingkat</strong>
                     <div class="input-group mb-3">
-                      @foreach ($tingkat as $tingkat)
                       <label class="input-group-text col-md-3" for="tingkat">Tingkat</label>
-                      <select class="form-select col-md-9" id="tingkat" name="tingkat">
-                        <option selected>Pilih</option>
-                        <option value="MTs">MTs</option>
-                        <option value="MA">MA</option>
-                        <option value="Salaf">Salaf</option>
+                      <select class="form-select col-md-9" id="tingkat" name="id_tingkat"> <!-- Ubah 'name' menjadi 'id_tingkat' -->
+                        <option>Pilih</option>
+                        @foreach ($tingkat as $tingkatItem)
+                        <option value="{{ $tingkatItem->id_tingkat }}" {{ old('id_tingkat') == $tingkatItem->id_tingkat ? 'selected' : '' }}>
+                          {{ $tingkatItem->tingkat }}
+                        </option>
+                        @endforeach
                       </select>
-                      @endforeach
+                      @error('id_tingkat') <!-- Ubah di sini juga -->
+                      <div class="text-danger">{{ $message }}</div>
+                      @enderror
                     </div>
+
+
                     <button type="submit" class="btn btn-primary mt-3">Submit</button>
                   </form>
+
                 </div>
               </div>
             </div>

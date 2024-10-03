@@ -22,7 +22,8 @@ class Santri extends Model
         'Thn_masuk',
         'Thn_keluar',
         'id_kelas',
-        'id_tingkat'
+        'id_tingkat',
+        'telepon'
     ];
     public function user()
     {
@@ -36,16 +37,16 @@ class Santri extends Model
 
     public function tingkat()
     {
-        return $this->belongsTo(Tingkat::class, 'id_tingkat');
+        return $this->belongsTo(tingkat::class, 'id_tingkat');
     }
 
     public function bayar()
     {
         return $this->hasMany(Bayar::class, 'Id_santri');
     }
-    public function transaksi()
+    public function tagihans()
     {
-        return $this->hasMany(transaksi::class, 'Id_santri');
+        return $this->hasMany(Tagihan::class, 'Id_santri');
     }
     public function tagihan()
     {

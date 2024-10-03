@@ -1,29 +1,29 @@
 <div class="card">
     <div class="card-header border-success">
         <h4>
-            <b>TAGIHAN SANTRI</b>
+            <b>
+                TAGIHAN YANG SUDAH DIBAYAR
+            </b>
         </h4>
         <form class="row g-4" action="{{ route('pembayaran.index') }}" method="GET">
             <div class="col-auto">
                 <a href="{{ route('pembayaran.index') }}" class="btn btn-secondary">Reset Filter</a>
             </div>
         </form>
-        <div class="mt-3">
-            <a class="btn btn-success" href="{{ route('tagihan.create') }}">Buat Tagihan</a>
-        </div>
     </div>
     <div class="card-body">
         <div class="table-responsive">
             <!-- Tabel Tagihan Sudah Dibayar -->
-            <h5 class="mt-5">Tagihan Sudah Dibayar</h5>
+
             <div class="table-responsive">
-                <table class="table table-striped table-bordered" id="paid-table">
+                <table class="table table-striped table-bordered mb-3" id="paid-table">
                     <thead>
                         <tr>
                             <th>No</th>
                             <th>Nama Tagihan</th>
                             <th>Nominal</th>
                             <th>Waktu</th>
+                            <th>Cetak</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,19 +38,21 @@
 
                             <td>{{ number_format($transaksi->total_bayar, 2) }}</td>
                             <td>{{ $transaksi->waktu_transaksi }}</td>
+                            <td><a class="btn btn-danger" href="{{ route('download.pdf', $transaksi->id_transaksi) }}">Cetak PDF</a></td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4">Tidak ada tagihan yang dibayar.</td>
+                            <td colspan="5">Belum ada tagihan yang dibayar.</td>
                         </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
+            <nav aria-label="Page navigation example">
+                <div>
+                    {{ $paidTagihan->onEachSide(1)->links('pagination::bootstrap-5', ['size' => 'sm']) }}
+                </div>
+            </nav>
         </div>
     </div>
-    <div class="card-footer clearfix">
-        <a href="javascript:void(0)" class="btn btn-sm btn-success float-right">View All Orders</a>
-    </div>
 </div>
-{{ $paidTagihan->links() }}

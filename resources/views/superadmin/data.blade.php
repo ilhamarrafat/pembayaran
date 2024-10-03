@@ -11,12 +11,9 @@
         <div class="container-fluid">
           <nav class="navbar navbar-light bg-light">
             <div class="col-md-12">
-              <button type="button" class="btn btn-warning col-md-2 mb-2">Cetak Data</button>
-              <button type="button" class="btn btn-success col-md-1 mb-2">Excel</button>
-              <button type="button" class="btn btn-warning col-md-1 mb-2">pdf</button>
-
+              <button type="button" class="btn btn-success col-md-2 mb-2">Cetak Excel</button>
+              <button type="button" class="btn btn-warning col-md-2 mb-2">Cetak Pdf</button>
               <div class="col-md-5 mb-10">
-
                 <form class="row g-3">
                   <div class="col-auto">
                     <input class="form-control" type="text" placeholder="Search" aria-label="default input example">
@@ -35,12 +32,13 @@
               <!-- TABLE: LATEST ORDERS -->
               <div class="card">
                 <div class="card-header border-transparent">
-                  <h3 class="card-title">Data Santri</h3>
-
+                  <h1 class="card-title">
+                    <b>Data Santri</b>
+                  </h1>
                   <div class="card-tools">
-                    <button>
-                      <a class="btn btn-primary" href="{{ route('santri.create') }}">Tambah</a>
-                    </button>
+                    <div class="mt-3">
+                      <a class="btn btn-primary" href="{{ route('csantri.create') }}">Tambah Santri</a>
+                    </div>
                   </div>
                 </div>
                 <!-- /.card-header -->
@@ -79,26 +77,25 @@
                           <td>{{$item->Tgl_lhr}}</td>
                           <td>{{$item->Thn_masuk}}</td>
                           <td>{{$item->Thn_keluar}}</td>
-                          <td>{{$item->id_kelas}}</td>
-                          <td>{{$item->id_tingkat}}</td>
-                          @endforeach
+                          <td>{{$item->kelas->kelas}}</td>
+                          <td>{{$item->tingkat->tingkat}}</td>
                           <td>
-                            <button class="icon-button-1">
+                            <a class="icon-button-1">
                               <i class="fa fa-print mb-1" href="#" style="font-size:20px;"></i>
-                            </button>
-                            <form action="{{route('santri.edit', $item->Id_santri)}}">
-                              <button class="icon-button-2">
-                                <i class="fas fa-edit mb-1" style="font-size:20px;"></i>
-                              </button>
-                            </form>
-                            <form action="{{ route('santri.destroy', $item->Id_santri) }}" method="post">
+                            </a>
+                            <a class="icon-button-2" href="{{route('santri.edit', $item->Id_santri)}}">
+                              <i class="fas fa-edit mb-1" style="font-size:20px;"></i>
+                            </a>
+                            <form action="{{ route('santri.destroy', $item->Id_santri) }}" method="post" style="display:inline;">
                               @csrf
                               @method('DELETE')
-                              <button type="submit" class="icon-button-3 mb-1"><i class="fa fa-trash-o" style="font-size:20px;"></i></button>
+                              <button type="submit" class="icon-button-3 mb-1" onclick="return confirm('Apakah Anda yakin ingin menghapus tagihan ini?');">
+                                <i class="fa fa-trash-o" style="font-size:20px;"></i>
+                              </button>
                             </form>
-                            <!--  -->
                           </td>
                         </tr>
+                        @endforeach
 
                       </tbody>
                     </table>

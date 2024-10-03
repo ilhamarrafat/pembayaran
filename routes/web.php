@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\kelasController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\tingkatController;
@@ -45,7 +46,6 @@ Route::middleware(['auth'])->group(function () {
   Route::get('dashboard/santri', [dashboardController::class, 'santri'])->middleware('userAkses:3');
   Route::get('dashboard/admin', [dashboardController::class, 'admin'])->middleware('userAkses:2');
   Route::get('dashboard/superadmin', [dashboardController::class, 'superadmin'])->middleware('userAkses:1');
-
   Route::resource('santris', santriController::class)->names(['santris' => 'santri'])->middleware('userAkses:1');
   // Route::put('/superadmin.csantri/{Id_santri}', [santriController::class, 'create'])->name('santris.create')->middleware('userAkses:1');
 
@@ -53,8 +53,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard/superadmin', [superadminController::class, 'index'])->name('sdashboard');
     // santri
     Route::get('dashboard/superadmin/data', [superadminController::class, 'data'])->name('data');
-    Route::get('dashboard/superadmin/create', [superadminController::class, 'create'])->name('santri.create');
-    Route::post('/dashboard/superadmin/data', [superadminController::class, 'store'])->name('santri.store');
+    Route::get('dashboard/superadmin/create', [superadminController::class, 'create'])->name('csantri.create');
+    Route::post('/dashboard/superadmin/data', [superadminController::class, 'store'])->name('csantri.store');
     //kelas
     // Route::get('/superadmin/kelas', [kelasController::class, 'index'])->name('kelas');
     // Route::get('/superadmin/kelas/create', [kelasController::class, 'create'])->name('kelas.create');
@@ -88,13 +88,16 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile/{id_admin}', [ProfileController::class, 'update'])->name('profile.update');
     //pembayaran
     Route::resource('pembayaran', PaymentController::class);
-    Route::get('dashboard/superadmin/pembayaran', [PaymentController::class, 'index'])->name('pembayaran');
-    Route::get('/pembayaran/create', [PaymentController::class, 'create'])->name('tagihan.create');
+    Route::get('dashboard/superadmin/pembayaran', [PaymentController::class, 'index'])->name('pembayaran.index');
+    Route::get('/superadmin/pembayaran/create', [PaymentController::class, 'create'])->name('tagihan.create');
     Route::post('/superadmin/pembayaran', [PaymentController::class, 'store'])->name('tagihan.store');
     Route::get('/pembayaran/{Id_tagihan}/edit', [PaymentController::class, 'edit'])->name('tagihan.edit');
     Route::put('/pembayaran/{Id_tagihan}', [PaymentController::class, 'update'])->name('tagihan.update');
     Route::delete('/pembayaran/{Id_tagihan}', [PaymentController::class, 'destroy'])->name('tagihan.destroy');
     Route::get('/pembayaran/export/excel', [PaymentController::class, 'export_excel'])->name('export');
+    Route::get('/pembayaran/export', [PaymentController::class, 'export'])->name('tagihan.export');
+
+    Route::get('dashboard/superadmin/ajuan', [superadminController::class, 'ajuan'])->name('ajuan');
     // Route::get('/superadmin/pembayaran/{Id_tagihan}/{Id_santri}', [PaymentController::class, 'show'])->name('pembayaran.admin.show');
   });
 
@@ -103,18 +106,38 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/bayar/{id}', [BayarController::class, 'index'])->name('bayar');
     Route::get('bayar/{santri}', [BayarController::class, 'lihatBayar'])->name('bayar.index');
     // Route::post('/bayar', [santriController::class, 'bayar'])->name('bayar.proses');
-    Route::get('/santri/profile', [santriController::class, 'create'])->name('profile.santri');
+    // Route::get('dashboard/santri/profile', [santriController::class, 'profile'])->name('profile_santri');
+    Route::get('dashboard/santri/profile', [santriController::class, 'create'])->name('profile_santri');
     Route::POST('create', [santriController::class, 'store'])->name('santri.store');
     Route::get('/santri/edit', [santriController::class, 'edit'])->name('santri.edit');
     Route::put('/santri/{id}', [santriController::class, 'update'])->name('santri.update');
     // Route untuk menyimpan tagihan
     Route::POST('/cekout', [BayarController::class, 'store'])->name('cekout');
     Route::get('/santri/ajuan', [telatController::class, 'index'])->name('sktm');
+    Route::get('/download-pdf/{id}', [BayarController::class, 'downloadPdf'])->name('download.pdf');
+
 
     // Route::get('/santri/pembayaran/', [PaymentController::class, 'showSantri']);
   });
 
-  Route::get('dashboard/superadmin/ajuan', [superadminController::class, 'ajuan'])->name('ajuan');
-
+  Route::middleware('userAkses:2')->group(function () {
+    Route::get('dashboard/admin', [AdminController::class, 'index'])->name('ddashboard');
+    Route::get('dashboard/admin/santri', [AdminController::class, 'data'])->name('data_santri');
+    //datasantri
+    Route::resource('/admin/data', AdminController::class);
+    Route::get('/admin/data', [AdminController::class, 'show'])->name('santri');
+    //pembayaran
+    Route::resource('pembayaran', AdminController::class);
+    Route::get('dashboard/admin/pembayaran', [AdminController::class, 'tagihan'])->name('pembayaran_santri');
+    Route::get('/pembayaran/export/excel', [PaymentController::class, 'export_excel'])->name('export');
+    Route::get('/pembayaran/export', [PaymentController::class, 'export'])->name('tagihan.export');
+    //profile
+    Route::get('/santri/profile', [AdminController::class, 'create'])->name('profile_admin');
+    Route::POST('create', [AdminController::class, 'store'])->name('admin.store');
+    Route::get('/admin/edit', [AdminController::class, 'edit'])->name('admin.edit');
+    Route::put('/admin/{id}', [AdminController::class, 'update'])->name('admin.update');
+    //ajuan
+    Route::get('dashboard/admin/ajuan', [AdminController::class, 'ajuan'])->name('ajuan_santri');
+  });
   Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });

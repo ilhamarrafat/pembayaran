@@ -14,7 +14,7 @@
         @php
         $no = 1;
         @endphp
-        @foreach($tagihan as $tag)
+        @foreach($tagihans as $tag)
         <tr>
             <td>{{ $no++ }}</td>
             <td>{{ $tag->nama_tagihan }}</td>
