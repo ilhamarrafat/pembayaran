@@ -40,7 +40,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{route('berita')}}" class="nav-link">
+                            <a href="{{route('berita_show')}}" class="nav-link">
                                 <i class="nav-icon fa fa-newspaper-o" style="font-size:20px"></i>
                                 <p>
                                     Berita

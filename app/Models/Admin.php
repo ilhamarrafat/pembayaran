@@ -25,4 +25,8 @@ class Admin extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function admin()
+    {
+        return $this->hasOne(Admin::class, 'user_id');
+    }
 }

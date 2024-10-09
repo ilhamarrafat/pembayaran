@@ -128,7 +128,7 @@
                 </div>
                 @endif
                 <div class="mt-3">
-                  <a class="btn btn-success" href="{{Route('export')}}">Cetak Excel</a>
+                  <a class="btn btn-success" href="{{Route('export_tagihan')}}">Cetak Excel</a>
                 </div>
                 <div class="card-tools">
                 </div>

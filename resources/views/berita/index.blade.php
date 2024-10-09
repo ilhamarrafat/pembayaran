@@ -33,7 +33,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{route('pembayaran')}}" class="nav-link">
+              <a href="{{route('pembayaran.index')}}" class="nav-link">
                 <i class='nav-icon fas fa-wallet' style='font-size:20px'></i>
                 <p>
                   Pembayaran

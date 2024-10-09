@@ -14,7 +14,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
           <div class="image">
-            <img src="{{ asset('foto/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
+            <img src="{{ asset('profile/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
           </div>
           <div class="info">
             <a>Hello,
@@ -25,7 +25,7 @@
         <nav class="mt-2">
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <li class="nav-item menu-open">
-              <a href="{{route('dashboard')}}" class="nav-link">
+              <a href="{{url('dashboard/superadmin')}}" class="nav-link">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>
                   Dashboard
@@ -33,7 +33,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{route('pembayaran')}}" class="nav-link">
+              <a href="{{route('pembayaran.index')}}" class="nav-link">
                 <i class='nav-icon fas fa-wallet' style='font-size:20px'></i>
                 <p>
                   Pembayaran
@@ -109,31 +109,40 @@
               <div class="card" style="width: 18rem;">
                 <div class="card-body">
                   @if($admin->foto)
-                  <img src=" {{ url('foto/'.$admin->foto) }}" style="width: 100px;" class="card-img-top mb-2" alt="...">
+                  <img src="{{ asset('profile/' . $admin->foto) }}" style="width: 100px;" class="card-img-top mb-2" alt="...">
                   @else
                   <p>No photo available</p>
                   @endif
 
-
-                  <div class="input-group">
+                  <div class="input-group mb-2">
                     <input type="file" name="foto" class="form-control" id="foto">
-                    <label class="input-group-text mb-2" for="foto">Upload</label>
+                    <label class="input-group-text" for="foto">Upload</label>
                   </div>
+
                   <h5 class="card-title">Nama</h5>
                   <div class="">
-                    <input class="form-control mb-2" id="nama" name="nama" value="{{Auth::user()->name}}">
+                    <input class="form-control mb-2" id="nama" name="nama" value="{{ old('nama', $admin->nama) }}" required>
                   </div>
+
                   <h5 class="card-title">Email</h5>
                   <div class="">
-                    <input class="form-control mb-2" id="email" name="email" value="">
+                    <input class="form-control mb-2" id="email" name="email" value="{{ old('email', $admin->user->email) }}" required>
                   </div>
+
                   <h5 class="card-title">Password</h5>
                   <div class="">
-                    <input class="form-control mb-2" id="password" name="password" value="">
+                    <input type="password" class="form-control mb-2" id="password" name="password" placeholder="tidak boleh kosong">
                   </div>
+                  <h5 class="card-title">Confirm Password</h5>
+                  <div class="">
+                    <input type="password" class="form-control mb-2" id="password_confirmation" name="password_confirmation" placeholder="Konfirmasi passwordmu">
+                  </div>
+
                   <button type="submit" class="mt-2 btn btn-primary">Submit</button>
-                  @endforeach
+                </div>
+              </div>
             </form>
+            @endforeach
           </div>
         </div>
 

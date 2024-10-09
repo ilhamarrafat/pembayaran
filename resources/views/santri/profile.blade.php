@@ -197,8 +197,6 @@
                 </div>
         </section>
     </div>
-
-    @include('dadmin.script')
 </body>
 @include('dadmin.style')
 @include('dadmin.script')

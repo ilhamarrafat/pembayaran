@@ -17,7 +17,8 @@ class Tagihan extends Model
         'id_tingkat',
         'nama_tagihan',
         'nominal_tagihan',
-        'waktu_tagihan'
+        'waktu_tagihan',
+        'id_transaksi'
     ];
     protected $dates = [
         'waktu_tagihan'

@@ -14,9 +14,11 @@
             <div class="sidebar">
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                    <div class="image">
-                        <img src="{{ asset('storage/' . Auth::user()->admin->foto)}}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
-                    </div>
+                    @if(Auth::user()->admin && Auth::user()->admin->foto)
+                    <img src="{{ asset('profile/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
+                    @else
+                    <img src="{{ asset('profile/default.jpg') }}" class="img-circle elevation-2" alt="Default User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
+                    @endif
                     <div class="info">
                         <a>Hello,
                             <a>{{ Auth::user()->name }}</a>

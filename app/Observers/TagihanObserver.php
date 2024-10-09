@@ -26,9 +26,8 @@ class TagihanObserver
             'waktu_transaksi' => now(),
             'status_transaksi' => 'unpaid',
             'deskripsi' => $tagihan->nama_tagihan,
+            'Id_tagihan' => $tagihan->Id_tagihan
         ]);
-
-        // Update tagihan dengan id_transaksi yang baru dibuat (jika diperlukan)
         $tagihan->id_transaksi = $transaksi->id_transaksi;
         $tagihan->save(); // Simpan perubahan
     }

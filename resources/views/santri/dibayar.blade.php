@@ -7,7 +7,7 @@
         </h4>
         <form class="row g-4" action="{{ route('pembayaran.index') }}" method="GET">
             <div class="col-auto">
-                <a href="{{ route('pembayaran.index') }}" class="btn btn-secondary">Reset Filter</a>
+                <a href="{{ route('pembayaran.index') }}" class="btn btn-secondary"></a>
             </div>
         </form>
     </div>

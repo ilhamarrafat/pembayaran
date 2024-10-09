@@ -7,6 +7,7 @@ use App\Models\Kelas;
 use App\Models\Santri;
 use App\Models\Tagihan;
 use App\Models\Tingkat;
+use App\Models\transaksi;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,10 +16,27 @@ class santriController extends Controller
 {
     public function index(Request $request)
     {
+
         $santri = Santri::all();
+        $idSantri = Auth::user()->santri->Id_santri;
+
+        $paidTransaksi = Transaksi::where('Id_santri', $idSantri)
+            ->where('status_transaksi', 'paid')
+            ->get();
+
+        $unpaidTransaksi = Transaksi::where('Id_santri', $idSantri)
+            ->where('status_transaksi', 'unpaid')
+            ->get();
+
         $jumlahUser = $santri->count();
-        return view('santri.dashboard', compact('santri', 'jumlahUser'));
+        $jumlahTransaksi = $paidTransaksi->count();
+        $totalDibayar = $paidTransaksi->sum('total_bayar');
+        $jumlahUnpaidTagihan = $unpaidTransaksi->count();
+        $totalUnpaidTagihan = $unpaidTransaksi->sum('total_bayar');
+        return view('santri.dashboard', compact('santri', 'jumlahUser', 'jumlahTransaksi', 'totalDibayar', 'jumlahUnpaidTagihan', 'totalUnpaidTagihan'));
     }
+
+
     public function create()
     {
         $user = Auth::user();

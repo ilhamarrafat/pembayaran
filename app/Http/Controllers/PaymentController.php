@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ExportData;
+use App\Exports\ExportDataTagihan;
 use App\Models\kelas;
 use App\Models\tingkat;
 use App\Models\transaksi;
@@ -107,13 +108,11 @@ class PaymentController extends Controller
             // Membuat tagihan baru untuk setiap santri
             $tagihan = new Tagihan();
             $tagihan->Id_santri = $santri->Id_santri;
-            $tagihan->Id_santri = $santri->id;
             $tagihan->id_kelas = $request->id_kelas;
             $tagihan->id_tingkat = $request->id_tingkat;
             $tagihan->nama_tagihan = $request->nama_tagihan;
-            $tagihan->nominal_tagihan = $nominal_tagihan; // Simpan sebagai angka
+            $tagihan->nominal_tagihan = $nominal_tagihan;
             $tagihan->waktu_tagihan = $request->waktu_tagihan;
-            // $tagihan->transaksi = $santri->Id_santri;
             $tagihan->save();
         }
         // dd($tagihan);
@@ -201,9 +200,9 @@ class PaymentController extends Controller
         return redirect()->route('pembayaran.index')->with('success', 'Tagihan berhasil dihapus.');
     }
 
-    function export_excel()
+    public function export_tagihan()
     {
-        return Excel::download(new ExportData, "DataTagihanSantri.xlsx");
+        return Excel::download(new ExportDataTagihan, 'DataTagihanSantri.xlsx');
     }
     public function transaksi(Request $request)
     {

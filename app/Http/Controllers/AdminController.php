@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ExportData;
+use App\Models\Admin;
+use App\Models\Berita;
 use App\Models\kelas;
 use App\Models\Santri;
 use App\Models\Tagihan;
 use App\Models\tingkat;
 use App\Models\transaksi;
-use App\Observers\TagihanObserver;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Mpdf\Mpdf;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -109,6 +112,119 @@ class AdminController extends Controller
         return view('admin.pembayaran', compact('transaksis', 'tagihans', 'kelas', 'tingkat'))
             ->with('i', ($request->input('page', 1) - 1) * $pagination);
     }
+    public function berita(request $request)
+    {
+        $pagination = 5;
+        $beritas = Berita::orderBy('created_at', 'desc')->paginate($pagination);
+        $i = ($beritas->currentPage() - 1) * $pagination;
+        return view('admin.berita', compact('beritas', 'i'));
+    }
+
+    // public function create(Request $request)
+    // {
+    //     $admins = Admin::all();
+    //     return view('admin.profile', compact('admins'));
+    // }
+
+    // public function store(Request $request)
+    // {
+    //     $validasi = $request->validate([
+    //         'foto' => 'required|file|mimes:jpg,png,pdf|max:2048',
+    //         'nama' => 'required|string|max:255',
+    //         'email' => 'required|string|email|max:255|unique:users',
+    //         'password' => 'required|string|min:8'
+    //     ]);
+    //     $foto = $request->file('foto');
+    //     $gambar_ekstensi = $foto->extension();
+    //     $nama_foto = date('YmdHis') . "." . $gambar_ekstensi;
+    //     $foto->move(public_path('foto'), $nama_foto);
+    //     $admin = Admin::create([
+    //         'nama' => $request->nama,
+    //         'foto' => $nama_foto,
+    //         'user_id' => 2,
+    //     ]);
+    //     $user = User::create([
+    //         'name' => $request->nama,
+    //         'email' => $request->email,
+    //         'password' => Hash::make($request->password),
+    //         'role_id' => 2,
+    //     ]);
+    //     Admin::create($admin, $user);
+    //     // Redirect with success message
+    //     return view('admin.profile')->with('success', 'Admin profile successfully created.');
+    // }
+
+
+    // public function profileshow(string $id_admin)
+    // {
+    //     $admin = Admin::find($id_admin);
+
+    //     if (!$admin) {
+    //         return redirect()->route('profilecreate')->with('error', 'Admin not found.');
+    //     }
+
+    //     return view('superadmin.profile', compact('admin'))
+    //         ->with('success', 'User created successfully.');
+    // }
+
+    // public function profileedit(string $id_admin)
+    // {
+    //     $admin = Admin::find($id_admin);
+    //     dd($admin);
+    //     if (!$admin) {
+    //         return redirect()->route('profile_admin')->with('error', 'Admin not found.');
+    //     }
+    //     return view('admin.profile', compact('admin'))->with('success', 'Berita berhasil diedit.');
+    // }
+
+    // public function update(Request $request, $id)
+    // {
+    //     $admin = Admin::find($id);
+    //     // Validasi input
+    //     $request->validate([
+    //         'nama' => 'required|string|max:255',
+    //         'foto' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+    //         'email' => 'required|string|email|max:255|unique:users,email,' . $admin->user_id, // Use the user_id for validation
+    //         'password' => 'nullable|string|min:8',
+    //     ]);
+    //     dd($admin);
+
+    //     // Cek jika admin tidak ditemukan
+    //     if (!$admin) {
+    //         return redirect()->route('profile_admin')->with('error', 'Admin not found.');
+    //     }
+
+    //     // Update user yang terkait
+    //     $user = $admin->user;
+    //     $user->email = $request->email;
+    //     if ($request->filled('password')) {
+    //         $user->password = bcrypt($request->password);
+    //     }
+    //     $user->save();
+
+    //     // Update data admin
+    //     $admin->nama = $request->nama;
+
+    //     if ($request->hasFile('foto')) {
+    //         // Simpan file foto baru
+    //         $profile = $request->file('foto');
+    //         $gambar_ekstensi = $profile->extension();
+    //         $nama_profile = date('YmdHis') . "." . $gambar_ekstensi;
+    //         $profile->move(public_path('profile'), $nama_profile);
+
+    //         // Hapus foto lama jika ada
+    //         if ($admin->foto && file_exists(public_path('profile/' . $admin->foto))) {
+    //             unlink(public_path('profile/' . $admin->foto));
+    //         }
+
+    //         // Set nama file foto baru ke admin
+    //         $admin->foto = $nama_profile;
+    //     }
+
+    //     $admin->save();
+
+    //     return back()->with('success', 'Admin profile updated successfully!');
+    // }
 
 
     function export_excel()

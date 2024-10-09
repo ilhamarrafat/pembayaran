@@ -7,6 +7,7 @@ use App\Models\Santri;
 use App\Models\tagihan;
 use App\Models\transaksi;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Midtrans\Snap;
 use Midtrans\Config;
+use PDF;
 
 
 
@@ -100,14 +102,14 @@ class BayarController extends Controller
         $transaksi->waktu_transaksi = Carbon::now();
         $transaksi->order_id = 'BAYAR-' . uniqid(); // Membuat order_id unik
 
-        // Simpan transaksi agar id_transaksi diisi
+        // Simpan transaksi
         $transaksi->save();
 
-        // Menghubungkan transaksi dengan tagihan
+        // Menghubungkan transaksi dengan tagihan menggunakan pivot table
         foreach ($Id_tagihan as $id_tagihan) {
-            // Pastikan ID tagihan valid sebelum menghubungkan
-            if (Tagihan::find($id_tagihan)) {
-                $transaksi->tagihan()->attach($id_tagihan);
+            $tagihan = Tagihan::find($id_tagihan);
+            if ($tagihan) {
+                $transaksi->tagihan()->attach($tagihan);
             } else {
                 return back()->withErrors(['tagihan' => 'Tagihan tidak ditemukan: ' . $id_tagihan]);
             }
@@ -121,7 +123,7 @@ class BayarController extends Controller
             $itemDetails[] = [
                 'id' => $tagihan->Id_tagihan,
                 'price' => $tagihan->nominal_tagihan, // Nominal per tagihan
-                'quantity' => 1, // Jumlah item (bisa diatur sesuai kebutuhan)
+                'quantity' => 1, // Jumlah item 
                 'name' => $tagihan->nama_tagihan // Nama tagihan yang dibayar
             ];
         }
@@ -133,74 +135,31 @@ class BayarController extends Controller
         \Midtrans\Config::$is3ds = true;
 
         // Parameter untuk Midtrans
-        $params = array(
-            'transaction_details' => array(
+        $params = [
+            'transaction_details' => [
                 'order_id' => $transaksi->order_id,
                 'gross_amount' => $totalBayar,
-            ),
-            'customer_details' => array(
+            ],
+            'customer_details' => [
                 'first_name' => Auth::user()->santri->nama,
                 'last_name' => '',
                 'email' => Auth::user()->email,
-                'phone' => '08111222333',
-            ),
+                'phone' => Auth::user()->santri->telepon,
+            ],
             'item_details' => $itemDetails
-        );
+        ];
 
-        // Mendapatkan snap token
-        $snapToken = \Midtrans\Snap::getSnapToken($params);
-
-        // Kembalikan tampilan checkout
-        return view('santri.cekout', compact('snapToken', 'transaksi'));
-        if (!$transaksi->id_transaksi) {
-            return back()->withErrors(['transaksi' => 'Transaksi tidak disimpan dengan benar.']);
+        // Mendapatkan snap token dari Midtrans
+        try {
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+        } catch (\Exception $e) {
+            return back()->withErrors(['midtrans' => 'Gagal mendapatkan token pembayaran.']);
         }
 
-        // Menghubungkan transaksi dengan tagihan
-        foreach ($Id_tagihan as $id_tagihan) {
-            $transaksi->tagihan()->attach($id_tagihan);
-        }
-        $itemDetails = [];
-        $tagihanList = Tagihan::whereIn('Id_tagihan', $Id_tagihan)->get();
-
-        foreach ($tagihanList as $tagihan) {
-            $itemDetails[] = [
-                'id' => $tagihan->Id_tagihan,
-                'price' => $tagihan->nominal_tagihan, // Nominal per tagihan
-                'quantity' => 1, // Jumlah item (bisa diatur sesuai kebutuhan)
-                'name' => $tagihan->nama_tagihan // Nama tagihan yang dibayar
-            ];
-        }
-
-        // Set your Merchant Server Key
-        \Midtrans\Config::$serverKey = config('midtrans.Server_Key');
-        \Midtrans\Config::$isProduction = false;
-        // Set sanitization on (default)
-        \Midtrans\Config::$isSanitized = true;
-        // Set 3DS transaction for credit card to true
-        \Midtrans\Config::$is3ds = true;
-
-        // Menggunakan ID transaksi yang baru saja disimpan sebagai order_id
-        // $order_id = 'BAYAR-' . $transaksi->id . '-' . time();
-
-        $params = array(
-            'transaction_details' => array(
-                'order_id' => $transaksi->order_id,
-                'gross_amount' => $totalBayar,
-            ),
-            'customer_details' => array(
-                'first_name' => Auth::user()->santri->nama,
-                'last_name' => '',
-                'email' => Auth::user()->email,
-                'phone' => '08111222333',
-            ),
-            'item_details' => $itemDetails
-        );
-
-        $snapToken = \Midtrans\Snap::getSnapToken($params);
-
+        // Kembalikan tampilan checkout dengan snap token dan transaksi
         return view('santri.cekout', compact('snapToken', 'transaksi'));
     }
+
 
 
 
@@ -240,11 +199,11 @@ class BayarController extends Controller
         $html = view('pembayaran.cetak', $data)->render();
 
         // Setel opsi dompdf
-        $options = new Options();
-        $options->set('defaultFont', 'Arial'); // Anda dapat mengubah font default sesuai kebutuhan
+        $options = new \Dompdf\Options();
+        $options->set('isRemoteEnabled', true); // Aktifkan remote resource
 
-        // Inisialisasi dompdf
-        $dompdf = new Dompdf($options);
+        // Inisialisasi dompdf dengan opsi
+        $dompdf = new \Dompdf\Dompdf($options);
 
         // Load HTML ke dalam dompdf dan generate PDF
         $dompdf->loadHtml($html);

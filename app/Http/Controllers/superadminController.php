@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportData;
+use App\Models\Admin;
 use App\Models\kelas;
 use App\Models\tingkat;
 use Illuminate\Http\Request;
 use App\Models\Santri;
 use App\Models\tagihan;
 use App\Models\User;
+use App\Exports\ExportDataSantri;
+use App\Exports\ExportDataTagihan;
+use Illuminate\Support\Facades\Auth;
 use illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 
 class superadminController extends Controller
 {
@@ -17,7 +23,9 @@ class superadminController extends Controller
     {
         $santri = Santri::all();
         $jumlahUser = $santri->count();
-        return view('superadmin.dashboard', compact('santri', 'jumlahUser'));
+        $admin = Admin::where('user_id', Auth::id())->first();
+        // dd($admin);
+        return view('superadmin.dashboard', compact('santri', 'admin', 'jumlahUser'));
     }
     public function ajuan()
     {
@@ -63,7 +71,7 @@ class superadminController extends Controller
             'foto' => 'required|file|mimes:jpg,png,pdf|max:2048',
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'telepon' => 'required',
+            'telepon' => 'nullable|string|max:13',
             'Jenis_kelamin' => 'required',
             'Tmp_lhr' => 'required|string|max:255',
             'Tgl_lhr' => 'required|date',
@@ -193,5 +201,10 @@ class superadminController extends Controller
         $santris->delete();
         return redirect()->route('data')
             ->with('success', 'Santri deleted successfully.');
+    }
+    // Fungsi untuk export data santri
+    public function export_santri()
+    {
+        return Excel::download(new ExportDataSantri, 'DataSantri.xlsx');
     }
 }

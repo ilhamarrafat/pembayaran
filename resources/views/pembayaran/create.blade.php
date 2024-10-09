@@ -159,7 +159,6 @@
                                         this.value = formatRupiah(this.value, 'Rp. ');
                                     });
                                 </script>
-
                             </div>
                         </div>
                     </div>

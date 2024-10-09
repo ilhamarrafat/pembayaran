@@ -3,6 +3,7 @@
 
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
+        <!-- Sidebar -->
         <aside class="main-sidebar sidebar-dark-primary mb-20 ">
             <!-- Brand Logo -->
             <a href="index3.html" class="brand-link">
@@ -85,7 +86,6 @@
             </div>
             <!-- /.sidebar -->
         </aside>
-        <!-- /.sidebar-menu -->
         <div class="content-wrapper">
             <section class="content">
                 <div class="container-fluid">
@@ -104,10 +104,10 @@
                                 </form>
                             </div>
                             <div class="card">
-                                <div class="card-header border-transparent">
-                                    <h1 class="card-title">
-                                        <b>Data Santri</b>
-                                    </h1>
+                                <div class="card-header">
+                                    <h2 class="card-title">
+                                        <b>BERITA</b>
+                                    </h2>
                                 </div>
                                 <!-- /.card-header -->
                                 <div class="card-body p-0">
@@ -116,43 +116,24 @@
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Foto</th>
-                                                    <th>Nama</th>
-                                                    <th>Jenis Kelamin</th>
-                                                    <th>Alamat</th>
-                                                    <th>Tempat Lhr</th>
-                                                    <th>Tgl Lahir</th>
-                                                    <th>Tahun Masuk</th>
-                                                    <th>Tahun Keluar</th>
-                                                    <th>Kelas</th>
-                                                    <th>Tingkat</th>
-                                                    <th>Action</th>
+                                                    <th>Gambar</th>
+                                                    <th>Judul</th>
+                                                    <th>isi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($santri as $item)
+                                                @foreach ($beritas as $item )
                                                 <tr>
-                                                    <td>{{ ++$i }}</td>
+                                                    <td>{{++$i}}</td>
                                                     <td>
-                                                        @if ($item->foto)
-                                                        <img class="mb-1" src="{{url('storage/' . $item->foto)}}" style="width: 50px;">
+                                                        @if ($item->gambar)
+                                                        <img class="mb-3" src="{{url('gambar/'.$item->gambar)}}" style="width: 50px;">
                                                         @endif
                                                     </td>
-                                                    <td>{{$item->nama}}</td>
-                                                    <td>{{$item->Jenis_kelamin}}</td>
-                                                    <td>{{$item->alamat}}</td>
-                                                    <td>{{$item->Tmp_lhr}}</td>
-                                                    <td>{{$item->Tgl_lhr}}</td>
-                                                    <td>{{$item->Thn_masuk}}</td>
-                                                    <td>{{$item->Thn_keluar}}</td>
-                                                    <td>{{$item->kelas->kelas}}</td>
-                                                    <td>{{$item->tingkat->tingkat}}</td>
-                                                    <td>
-                                                        Cetak
-                                                    </td>
+                                                    <td>{{$item->judul}}</td>
+                                                    <td>{{$item->isi}}</td>
                                                 </tr>
                                                 @endforeach
-
                                             </tbody>
                                         </table>
                                     </div>
@@ -168,20 +149,12 @@
                 </nav>
             </section>
         </div>
+        <!-- /.sidebar -->
+        <!-- /.card -->
     </div>
     <!-- Tautan navigasi paginasi -->
-    {{ $santri->links() }}
+    {{ $beritas->links() }}
 </body>
-<!-- <div class="content-wrapper"> -->
-
-<!-- </div> -->
-<!-- <footer class="main-footer">
-    <div class="container copyright text-center mb-2">
-    <p>© <span>Copyright</span> <strong class="px-1 sitename">Admin</strong> <span>All Rights Reserved</span></p>
-    <div class="credits">
-    Designed by <a>Admin</a>
-    </div>
-    </div>
-  </footer> -->
+<!-- Content Wrapper. Contains page content -->
 @include('dadmin.style')
 @include('dadmin.script')

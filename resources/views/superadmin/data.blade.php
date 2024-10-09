@@ -11,19 +11,8 @@
         <div class="container-fluid">
           <nav class="navbar navbar-light bg-light">
             <div class="col-md-12">
-              <button type="button" class="btn btn-success col-md-2 mb-2">Cetak Excel</button>
-              <button type="button" class="btn btn-warning col-md-2 mb-2">Cetak Pdf</button>
-              <div class="col-md-5 mb-10">
-                <form class="row g-3">
-                  <div class="col-auto">
-                    <input class="form-control" type="text" placeholder="Search" aria-label="default input example">
-                  </div>
-                  <button class="btn btn-primary" type="submit">
-                    Cari
-                  </button>
-                </form>
 
-              </div>
+
 
               <!-- Main row -->
               <!-- Left col -->
@@ -31,14 +20,28 @@
 
               <!-- TABLE: LATEST ORDERS -->
               <div class="card">
-                <div class="card-header border-transparent">
-                  <h1 class="card-title">
-                    <b>Data Santri</b>
-                  </h1>
-                  <div class="card-tools">
-                    <div class="mt-3">
-                      <a class="btn btn-primary" href="{{ route('csantri.create') }}">Tambah Santri</a>
+                <div class="card-header border-success">
+                  <h4>
+                    <b>
+                      DATA SANTRI
+                    </b>
+                  </h4>
+                  <form class="row g-3 mb-3" method="GET" action="">
+                    <div class="col-md-3">
+                      <input type="text" name="search_transaksi" class="form-control" placeholder="Cari Nama Santri" value="">
                     </div>
+                  </form>
+                  <!-- Notifikasi jika data tidak ditemukan -->
+                  @if(session('error'))
+                  <div class="alert alert-danger mt-3">
+                    {{ session('error') }}
+                  </div>
+                  @endif
+                  <div class="mt-3">
+                    <a class="btn btn-success" href="{{Route('export_santri')}}">Cetak Excel</a>
+                  </div>
+                  <div class="mt-3">
+                    <a class="btn btn-primary" href="{{ route('csantri.create') }}">Tambah Santri</a>
                   </div>
                 </div>
                 <!-- /.card-header -->
@@ -80,12 +83,15 @@
                           <td>{{$item->kelas->kelas}}</td>
                           <td>{{$item->tingkat->tingkat}}</td>
                           <td>
-                            <a class="icon-button-1">
-                              <i class="fa fa-print mb-1" href="#" style="font-size:20px;"></i>
-                            </a>
-                            <a class="icon-button-2" href="{{route('santri.edit', $item->Id_santri)}}">
+                            <!-- Tombol print -->
+                            <button class="icon-button-1">
+                              <i class="fa fa-print mb-1" style="font-size:20px;"></i>
+                            </button>
+                            <!-- Tombol edit -->
+                            <a href="{{route('santri.edit', $item->Id_santri)}}" class="icon-button-2">
                               <i class="fas fa-edit mb-1" style="font-size:20px;"></i>
                             </a>
+                            <!-- Tombol hapus -->
                             <form action="{{ route('santri.destroy', $item->Id_santri) }}" method="post" style="display:inline;">
                               @csrf
                               @method('DELETE')
@@ -93,12 +99,18 @@
                                 <i class="fa fa-trash-o" style="font-size:20px;"></i>
                               </button>
                             </form>
-                          </td>
+                          <td>
                         </tr>
                         @endforeach
 
                       </tbody>
                     </table>
+                    <!-- Tautan navigasi paginasi -->
+                    <nav aria-label="Page navigation example">
+                      <div>
+                        {{ $santri->onEachSide(1)->links('pagination::bootstrap-5', ['size' => 'sm']) }}
+                      </div>
+                    </nav>
                   </div>
                   <!-- /.table-responsive -->
                 </div>
@@ -111,10 +123,9 @@
         </div>
         </nav>
       </section>
+
     </div>
   </div>
-  <!-- Tautan navigasi paginasi -->
-  {{ $santri->links() }}
 </body>
 <!-- <div class="content-wrapper"> -->
 

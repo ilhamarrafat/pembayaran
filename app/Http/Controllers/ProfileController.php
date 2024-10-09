@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
@@ -15,6 +16,7 @@ class ProfileController extends Controller
     public function index(Request $request)
     {
         $admins = Admin::all();
+        // dd(Auth::user(), Auth::user()->admin);
         return view('superadmin.profile', compact('admins'));
     }
 
@@ -31,39 +33,37 @@ class ProfileController extends Controller
      */
     public function store(Request $request)
     {
+        // Validasi data
         $validasi = $request->validate([
             'foto' => 'required|file|mimes:jpg,png,pdf|max:2048',
             'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8'
         ]);
-        $foto = $request->file('foto');
-        $gambar_ekstensi = $foto->extension();
-        $nama_foto = date('YmdHis') . "." . $gambar_ekstensi;
-        $foto->move(public_path('foto'), $nama_foto);
-        // $Data = ([
-        //     'user_id' => $request->user_id,
-        //     'nama' => $request->input('nama'),
-        //     'email' => $request->input('email'),
-        //     'password' => $request->input('password')
-        // ]);
-        $admin = Admin::create([
-            'nama' => $request->nama,
-            'foto' => $nama_foto,
-            'user_id' => 1, // Tetapkan peran sebagai user
-        ]);
+
+        // Simpan user
         $user = User::create([
             'name' => $request->nama,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role_id' => 1,
+            'role_id' => 1, // Sesuaikan role jika perlu
         ]);
-        // $admin = Admin::all();
-        // $user = User::all();
-        // dd($user, $admin);
-        Admin::create($admin, $user);
-        return redirect('/profile')->with('success', 'Berita berhasil ditambahkan.');
+
+        // Simpan foto
+        $foto = $request->file('foto');
+        $nama_foto = date('YmdHis') . '.' . $foto->extension();
+        $foto->move(public_path('foto'), $nama_foto);
+
+        // Simpan admin dengan user_id dari user yang baru saja dibuat
+        Admin::create([
+            'nama' => $request->nama,
+            'foto' => $nama_foto,
+            'user_id' => $user->id, // Menggunakan id dari user yang baru dibuat
+        ]);
+
+        return redirect('/profile')->with('success', 'Admin berhasil ditambahkan.');
     }
+
 
     /**
      * Display the specified resource.
@@ -104,15 +104,15 @@ class ProfileController extends Controller
             'nama' => 'required|string|max:255',
             'foto' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi foto
             'email' => 'required|string|email|max:255|unique:users,email,' . $id_admin . ',id', // Validasi email
-            'password' => 'nullable|string|min:8', // Validasi password
+            'password' => 'nullable|string|min:8|confirmed', // Validasi password dan konfirmasi
         ]);
+
         // Ambil data admin yang akan diupdate
         $admin = Admin::find($id_admin);
-        // dd($admin);
 
         // Cek jika admin tidak ditemukan
         if (!$admin) {
-            return redirect()->route('admin.index')->with('error', 'Admin not found.');
+            return redirect()->route('profile')->with('error', 'Admin not found.');
         }
 
         // Update user yang terkait
@@ -143,8 +143,12 @@ class ProfileController extends Controller
         }
 
         $admin->save();
-        return redirect()->route('profile', $admin->id_admin)->with('success', 'Berita berhasil ditambahkan.');
+        return redirect()->route('profile', $admin->id_admin)->with('success', 'Profile updated successfully.');
     }
+
+
+
+
 
     /**
      * Remove the specified resource from storage.
