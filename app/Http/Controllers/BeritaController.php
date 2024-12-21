@@ -16,6 +16,10 @@ class BeritaController extends Controller
     {
         $pagination = 5;
         $beritas = Berita::orderBy('created_at', 'desc')->paginate($pagination);
+        if ($beritas->isEmpty()) {
+            return view('berita.index', ['beritas' => [], 'i' => 0]);
+        }
+
         $i = ($beritas->currentPage() - 1) * $pagination;
         return view('berita.index', compact('beritas', 'i'));
     }
@@ -110,5 +114,15 @@ class BeritaController extends Controller
         $beritas->delete();
         return redirect()->route('berita')
             ->with('success', 'Santri deleted successfully.');
+    }
+    public function tampil($slug)
+    {
+        $berita = Berita::where('slug', $slug)->first();
+
+        if (!$berita) {
+            abort(404); // Jika berita tidak ditemukan
+        }
+
+        return view('berita.tampil', compact('berita'));
     }
 }

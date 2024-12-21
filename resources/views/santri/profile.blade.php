@@ -50,19 +50,9 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{route('sktm')}}" class="nav-link">
-                                <i class="nav-icon fa fa-envelope"></i>
-                                <p>
-                                    Ajuan Keterlambatan
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{route('logout')}}" class="nav-link">
-                                <i class="nav-icon fas fa fa-sign-out"></i>
-                                <p>
-                                    Logout
-                                </p>
+                            <a href="{{ route('logout') }}" class="nav-link" onclick="confirmLogout(event);">
+                                <i class="nav-icon fa fa-sign-out"></i>
+                                <p>Logout</p>
                             </a>
                         </li>
                     </ul>
@@ -197,6 +187,14 @@
                 </div>
         </section>
     </div>
+    <script>
+        function confirmLogout(event) {
+            event.preventDefault();
+            if (confirm('Apakah Anda yakin ingin keluar?')) {
+                window.location.href = "{{ route('logout') }}";
+            }
+        }
+    </script>
+    @include('dadmin.style')
+    @include('dadmin.script')
 </body>
-@include('dadmin.style')
-@include('dadmin.script')

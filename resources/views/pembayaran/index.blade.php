@@ -14,7 +14,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
           <div class="image">
-            <img src="{{ asset('foto/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
+            <img src="{{ url('profile/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
           </div>
           <div class="info">
             <a>Hello,
@@ -57,7 +57,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{route('data')}}" class="nav-link ">
+              <a href="{{route('data')}}" class="nav-link">
                 <i class="nav-icon fas fa-database"></i>
                 <p>
                   Data
@@ -65,21 +65,19 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="pages/gallery.html" class="nav-link">
-                <i class="nav-icon fa fa-envelope"></i>
-                <p>
-                  Ajuan Keterlambatan
-                </p>
+              <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault(); confirmLogout();">
+                <i class="nav-icon fa fa-sign-out"></i>
+                <p>Logout</p>
               </a>
             </li>
-            <li class="nav-item">
-              <a href="{{route('logout')}}" class="nav-link">
-                <i class="nav-icon fas fa fa-sign-out"></i>
-                <p>
-                  Logout
-                </p>
-              </a>
-            </li>
+
+            <script>
+              function confirmLogout() {
+                if (confirm('Apakah Anda yakin ingin keluar?')) {
+                  window.location.href = "{{ route('logout') }}";
+                }
+              }
+            </script>
           </ul>
         </nav>
       </div>
@@ -99,11 +97,8 @@
             <!-- TABLE: LATEST ORDERS -->
             <div class="card">
               <div class="card-header border-success">
-                <h4>
-                  <b>
-                    PEMBAYARAN SANTRI
-                  </b>
-                </h4>
+                <h4><b>PEMBAYARAN SANTRI</b></h4>
+
                 <form class="row g-3 mb-4" method="GET" action="{{ route('pembayaran.index') }}">
                   <div class="col-md-3">
                     <input type="text" name="search_transaksi" class="form-control" placeholder="Cari Nama Santri" value="{{ request('search_transaksi') }}">
@@ -121,26 +116,21 @@
                   </div>
                 </form>
 
-                <!-- Notifikasi jika data tidak ditemukan -->
                 @if(session('error'))
                 <div class="alert alert-danger mt-3">
                   {{ session('error') }}
                 </div>
                 @endif
+
                 <div class="mt-3">
-                  <a class="btn btn-success" href="{{Route('export_tagihan')}}">Cetak Excel</a>
-                </div>
-                <div class="card-tools">
+                  <a class="btn btn-success" href="{{ route('export_tagihan') }}">Cetak Excel</a>
                 </div>
               </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <div class="table-responsive">
-                  @include('pembayaran.transaksi')
-                </div>
-              </div>
+
+              @include('pembayaran.transaksi')
+
               <div class="card-footer clearfix">
-                <a href="javascript:void(0)" class="btn btn-sm btn-success float-right">View All Orders</a>
+
               </div>
             </div>
           </div>
@@ -189,22 +179,13 @@
                   <!-- Tombol Export dan Buat Tagihan -->
                   <div>
                     <div class="mt-3 mb-3">
-                      <a href="{{ route('tagihan.export', request()->all()) }}" class="btn btn-success">Export Tagihan</a>
+                      <a href="{{ route('tagihan_export', request()->all()) }}" class="btn btn-success">Export Tagihan</a>
                       <a class="btn btn-primary" href="{{ route('tagihan.create')}}">Buat Tagihan</a>
                     </div>
                   </div>
                   <!-- /.card-header -->
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      @include('pembayaran.tagihan')
-                    </div>
-                    <!-- /.table-responsive -->
-                  </div>
+                  @include('pembayaran.tagihan')
                   <!-- /.card-body -->
-                  <div class="card-footer clearfix">
-                    <a href="javascript:void(0)" class="btn btn-sm btn-success float-right">View All Orders</a>
-                  </div>
-                  <!-- /.card-footer -->
                 </div>
               </div>
             </div>
@@ -212,4 +193,35 @@
         </div>
         @include('dadmin.style')
         @include('dadmin.script')
+        <script>
+          // Validasi tombol print
+          function confirmPrint(event) {
+            event.preventDefault(); // Mencegah aksi default tombol
+            const confirmation = confirm("Apakah Anda yakin ingin mencetak data ini?");
+            if (confirmation) {
+              console.log("Proses mencetak...");
+              // Tambahkan logika cetak jika diperlukan
+              return true; // Lanjutkan aksi jika dikonfirmasi
+            }
+            return false; // Batalkan aksi jika tidak dikonfirmasi
+          }
+
+          // Validasi tombol edit
+          function confirmEdit(event) {
+            event.preventDefault(); // Mencegah navigasi default
+            const confirmation = confirm("Apakah Anda yakin ingin mengedit data ini?");
+            if (confirmation) {
+              window.location.href = event.currentTarget.href; // Lanjutkan navigasi
+            }
+          }
+
+          // Validasi tombol hapus
+          function confirmDelete(event) {
+            const confirmation = confirm("Apakah Anda yakin ingin menghapus tagihan ini?");
+            if (!confirmation) {
+              event.preventDefault(); // Batalkan penghapusan jika tidak dikonfirmasi
+            }
+          }
+        </script>
+
 </body>

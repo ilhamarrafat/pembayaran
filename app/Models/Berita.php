@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Berita extends Model
 {
@@ -13,9 +14,14 @@ class Berita extends Model
      *
      * @var array
      */
-    protected $fillable = [
-        'judul',       // Misalnya atribut lain
-        'isi',     // Misalnya atribut lain
-        'gambar',      // Tambahkan atribut gambar di sini
-    ];
+    protected $fillable = ['judul', 'isi', 'gambar', 'slug'];
+
+    protected static function booted()
+    {
+        static::creating(function ($berita) {
+            if (empty($berita->slug)) {
+                $berita->slug = Str::slug($berita->judul);
+            }
+        });
+    }
 }

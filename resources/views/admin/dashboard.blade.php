@@ -13,7 +13,7 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="{{ asset('foto/' . Auth::user()->admin) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
+                        <img src="{{ url('profile/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
                     </div>
                     <div class="info">
                         <a>Hello,
@@ -64,21 +64,19 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/gallery.html" class="nav-link">
-                                <i class="nav-icon fa fa-envelope"></i>
-                                <p>
-                                    Ajuan Keterlambatan
-                                </p>
+                            <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault(); confirmLogout();">
+                                <i class="nav-icon fas fa-sign-out"></i>
+                                <p>Logout</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{route('logout')}}" class="nav-link">
-                                <i class="nav-icon fas fa fa-sign-out"></i>
-                                <p>
-                                    Logout
-                                </p>
-                            </a>
-                        </li>
+
+                        <script>
+                            function confirmLogout() {
+                                if (confirm('Apakah Anda yakin ingin keluar?')) {
+                                    window.location.href = "{{ route('logout') }}";
+                                }
+                            }
+                        </script>
                     </ul>
                 </nav>
             </div>
@@ -110,6 +108,19 @@
             <!-- /.content-header -->
             <!-- Main content -->
             <section class="content">
+                @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                @endif
+
+                @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                @endif
 
                 <div class="container-fluid">
                     <!-- Info boxes -->
@@ -202,3 +213,17 @@
 </body>
 @include('dadmin.style')
 @include('dadmin.script')
+<script>
+    window.onload = function() {
+        var successMessage = "{{ session('success') }}";
+        var errorMessage = "{{ session('error') }}";
+
+        if (successMessage) {
+            alert(successMessage);
+        }
+
+        if (errorMessage) {
+            alert(errorMessage);
+        }
+    }
+</script>

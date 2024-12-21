@@ -32,9 +32,9 @@ use App\Http\Controllers\telatController;
 */
 
 Route::get('/', [DepanController::class, 'index'])->name('index');
-// Route::get('/home', function () {
-//   return redirect('home');
-// })->name('home');
+Route::get('/berita/{slug}', [BeritaController::class, 'tampil'])->name('berita.tampil');
+
+
 Route::get('/login', [AuthController::class, 'showlogin'])->name('login');
 Route::get('/register', [AuthController::class, 'create'])->name('register');
 Route::post('/register', [AuthController::class, 'store']);
@@ -66,14 +66,16 @@ Route::middleware(['auth'])->group(function () {
     // Route::get('/superadmin/tingkat/data', [superadminController::class, 'index'])->name('data');
     Route::resource('data', superadminController::class);
     Route::get('/data/{Id_santri}', [superadminController::class, 'show'])->name('santri.show');
-    Route::get('/data/{Id_santri}/edit', [superadminController::class, 'edit'])->name('santri.edit');
-    Route::put('/data/{Id_santri}', [superadminController::class, 'update'])->name('santri.update');
-    Route::delete('/data/{Id_santri}', [superadminController::class, 'destroy'])->name('santri.destroy');
+    Route::get('/data/{Id_santri}/edit', [superadminController::class, 'edit'])->name('santri_edit');
+    Route::put('/data/{Id_santri}', [superadminController::class, 'update'])->name('santri_update');
+    Route::delete('/data/{Id_santri}', [superadminController::class, 'destroy'])->name('santri_destroy');
+    Route::get('/export-pdf/{Id_santri}', [superadminController::class, 'exportPDF'])->name('exportdatapdf');
+
     // Route::get('/data/export', [superadminController::class, 'export'])->name('export_data_santri');
     // berita
     Route::get('dashboard/superadmin/berita', [BeritaController::class, 'index'])->name('berita');
     Route::resource('berita', BeritaController::class);
-    Route::get('/berita', [BeritaController::class, 'create'])->name('berita.create');
+    Route::get('/superadmin/berita', [BeritaController::class, 'create'])->name('berita.create');
     Route::POST('create', [BeritaController::class, 'store'])->name('berita.store');
     Route::resource('berita', BeritaController::class);
     Route::get('/berita/{id}', [BeritaController::class, 'show'])->name('berita.show');
@@ -86,21 +88,21 @@ Route::middleware(['auth'])->group(function () {
     Route::POST('create', [ProfileController::class, 'store'])->name('profile.store');
     Route::get('/superadmin/profile/{id_admin}', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/superadmin/profile/{id_admin}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/superadmin/profile/{id_admin}', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/superadmin/profile/{id_admin}', [ProfileController::class, 'update'])->name('profile_update');
     //pembayaran
     Route::resource('pembayaran', PaymentController::class);
     Route::get('dashboard/superadmin/pembayaran', [PaymentController::class, 'index'])->name('pembayaran.index');
     Route::get('/superadmin/pembayaran/create', [PaymentController::class, 'create'])->name('tagihan.create');
     Route::post('/superadmin/pembayaran', [PaymentController::class, 'store'])->name('tagihan.store');
-    Route::get('/pembayaran/{Id_tagihan}/edit', [PaymentController::class, 'edit'])->name('tagihan.edit');
-    Route::put('/pembayaran/{Id_tagihan}', [PaymentController::class, 'update'])->name('tagihan.update');
-    Route::delete('/pembayaran/{Id_tagihan}', [PaymentController::class, 'destroy'])->name('tagihan.destroy');
-    Route::get('/pembayaran/export', [PaymentController::class, 'export'])->name('tagihan.export');
+    Route::get('/superadmin/pembayaran/{Id_tagihan}/edit', [PaymentController::class, 'edit'])->name('tagihan.edit');
+    Route::put('/superadmin/pembayaran/{Id_tagihan}', [PaymentController::class, 'update'])->name('tagihan.update');
+    Route::delete('/superadmin/pembayaran/{Id_tagihan}', [PaymentController::class, 'destroy'])->name('tagihan.destroy');
+    Route::get('/superadmin/pembayaran/tagihan', [PaymentController::class, 'export_tagihan_santri'])->name('tagihan_export');
     //export excel
-    Route::get('/data/export/santri', [superadminController::class, 'export_santri'])->name('export_santri');
+    Route::get('/superadmin/export/santri', [superadminController::class, 'export_santri'])->name('export_santri');
     Route::get('/pembayaran/export/tagihan', [PaymentController::class, 'export_tagihan'])->name('export_tagihan');
+    Route::get('/downloadpdf/{id}', [PaymentController::class, 'bayarPdf'])->name('bayarPdf.pdf');
 
-    Route::get('dashboard/superadmin/ajuan', [superadminController::class, 'ajuan'])->name('ajuan');
     // Route::get('/superadmin/pembayaran/{Id_tagihan}/{Id_santri}', [PaymentController::class, 'show'])->name('pembayaran.admin.show');
   });
 
@@ -116,9 +118,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/santri/{id}', [santriController::class, 'update'])->name('santri.update');
     // Route untuk menyimpan tagihan
     Route::POST('/cekout', [BayarController::class, 'store'])->name('cekout');
-    Route::get('/santri/ajuan', [telatController::class, 'index'])->name('sktm');
     Route::get('/download-pdf/{id}', [BayarController::class, 'downloadPdf'])->name('download.pdf');
-
 
     // Route::get('/santri/pembayaran/', [PaymentController::class, 'showSantri']);
   });
@@ -129,23 +129,22 @@ Route::middleware(['auth'])->group(function () {
     //datasantri
     Route::resource('/admin/data', AdminController::class);
     Route::get('/admin/data', [AdminController::class, 'show'])->name('santri');
+    Route::get('/data/export/santri', [AdminController::class, 'export_data_santri'])->name('export_data_santri');
+    Route::get('/exportPdf/{id}', [AdminController::class, 'exportPDF'])->name('export.pdf');
     //pembayaran
     Route::resource('pembayaran', AdminController::class);
     Route::get('dashboard/admin/pembayaran', [AdminController::class, 'tagihan'])->name('pembayaran_santri');
-    Route::get('/pembayaran/export/excel', [PaymentController::class, 'export_excel'])->name('export');
-    Route::get('/pembayaran/export', [PaymentController::class, 'export'])->name('tagihan.export');
+    Route::get('/admin/export/transaksi', [AdminController::class, 'export_excel'])->name('export_transaksi');
+    Route::get('/admin/export', [AdminController::class, 'export'])->name('tagihan.export');
     //profile
     Route::resource('profile', AdminController::class);
-    Route::get('/admin/profile', [AdminController::class, 'create'])->name('profile_admin');
-    Route::post('/admin/profile-store', [AdminController::class, 'store'])->name('profile_store_admin');
-    Route::put('/admin/profile-update/{id}', [AdminController::class, 'update'])->name('profile_update_admin');
-    // Route::get('/profile/{id_admin}', [ProfileController::class, 'show'])->name('profile.show');
-    // Route::get('/profile/{id_admin}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    // Route::put('/profile/{id_admin}', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/admin/profile', [AdminController::class, 'profile'])->name('profile_admin');
+    Route::post('/admin/profile-store/{id_admin}', [AdminController::class, 'store'])->name('profile_store_admin');
+    Route::put('/admin/profile-update/{id_admin}', [AdminController::class, 'update'])->name('profile_update_admin');
+    // Route::get('/admin/{id_admin}', [AdminController::class, 'show'])->name('profile.show');
+    Route::get('/admin/{id_admin}/edit', [AdminController::class, 'edit'])->name('profile.edit');
     //berita_admin
     Route::get('/admin/berita', [AdminController::class, 'berita'])->name('berita_show');
-    //ajuan
-    Route::get('dashboard/admin/ajuan', [AdminController::class, 'ajuan'])->name('ajuan_santri');
   });
   Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });

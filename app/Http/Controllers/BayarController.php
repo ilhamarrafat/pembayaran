@@ -27,19 +27,41 @@ class BayarController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+
     public function index(Request $request)
     {
         $pagination = 5;
-        // Mendapatkan data santri yang sedang login
-        $santri = Santri::find(Auth::user()->santri->Id_santri);
-        // Ambil data tagihan yang sudah dibayar
-        $paidTagihan = Transaksi::with('tagihan') // Eager loading relasi tagihan
-            ->where('Id_santri', $santri->Id_santri)
-            ->where('status_transaksi', 'paid')
-            ->paginate(5);
 
-        $unpaidTagihan = Tagihan::where('id_kelas', $santri->id_kelas) // Pastikan ini merujuk ke id_kelas yang benar
+        // Mendapatkan data santri yang sedang login
+        $santri = Santri::with(['kelas', 'tingkat'])->find(Auth::user()->santri->Id_santri);
+
+        // Cek apakah santri ditemukan dan statusnya aktif
+        if (!$santri || $santri->status !== 'aktif') {
+            // Jika santri tidak aktif, set tagihan menjadi 0
+            return view('santri.pembayaran', [
+                'unpaidTagihan' => collect(), // Tidak ada tagihan
+                'santri' => $santri,
+                'paidTagihan' => collect(),  // Tidak ada tagihan yang sudah dibayar
+                'isPaginated' => false // Menandakan tidak ada pagination
+            ]);
+        }
+
+        // Ambil bulan dan tahun masuk santri
+        $bulanMasuk = Carbon::createFromFormat('Y-m-d', $santri->Thn_masuk)->month;
+        $tahunMasuk = Carbon::createFromFormat('Y-m-d', $santri->Thn_masuk)->year;
+
+        // Tagihan unpaid (belum dibayar) untuk santri berdasarkan kelas, tingkat, dan bulan masuk
+        $unpaidTagihan = Tagihan::where('id_kelas', $santri->id_kelas)
             ->where('id_tingkat', $santri->id_tingkat)
+            ->whereYear('waktu_tagihan', '>=', $tahunMasuk)
+            ->where(function ($query) use ($bulanMasuk, $tahunMasuk) {
+                $query->whereYear('waktu_tagihan', '>', $tahunMasuk)
+                    ->orWhere(function ($subQuery) use ($bulanMasuk, $tahunMasuk) {
+                        $subQuery->whereYear('waktu_tagihan', $tahunMasuk)
+                            ->whereMonth('waktu_tagihan', '>=', $bulanMasuk);
+                    });
+            })
             ->whereNotIn('Id_tagihan', function ($query) use ($santri) {
                 $query->select('id_tagihan')
                     ->from('transaksi_tagihan')
@@ -51,11 +73,18 @@ class BayarController extends Controller
                     });
             })
             ->orderBy('waktu_tagihan', 'desc')
-            ->paginate(5);
+            ->paginate($pagination); // Pagination untuk tagihan yang belum dibayar
+
+        // Tagihan paid (sudah dibayar)
+        $paidTagihan = Transaksi::with('tagihan')
+            ->where('Id_santri', $santri->Id_santri)
+            ->where('status_transaksi', 'paid')
+            ->paginate($pagination); // Pagination untuk tagihan yang sudah dibayar
 
         // Mengembalikan view dengan data yang dibutuhkan
         return view('santri.pembayaran', compact('unpaidTagihan', 'santri', 'paidTagihan'))
-            ->with('i', ($request->input('page', 1) - 1) * $pagination);
+            ->with('i', ($request->input('page', 1) - 1) * $pagination)
+            ->with('isPaginated', true); // Menandakan bahwa data ini dipaginasi
     }
 
 

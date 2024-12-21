@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Santri extends Model
 {
     use HasFactory;
-    protected $table = 'Santri';
+    protected $table = 'santri';
     protected $primaryKey = 'Id_santri';
     protected $fillable = [
         'Id_santri',
         'user_id',
         'foto',
         'nama',
+        'wali_santri',
         'Jenis_kelamin',
         'Tmp_lhr',
         'Tgl_lhr',
@@ -23,11 +24,12 @@ class Santri extends Model
         'Thn_keluar',
         'id_kelas',
         'id_tingkat',
-        'telepon'
+        'telepon',
+        'status'
     ];
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function kelas()

@@ -14,7 +14,7 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="{{ asset('foto/' . Auth::user()->admin) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
+                        <img src="{{ url('profile/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
                     </div>
                     <div class="info">
                         <a>Hello,
@@ -65,21 +65,19 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/gallery.html" class="nav-link">
-                                <i class="nav-icon fa fa-envelope"></i>
-                                <p>
-                                    Ajuan Keterlambatan
-                                </p>
+                            <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault(); confirmLogout();">
+                                <i class="nav-icon fas fa-sign-out"></i>
+                                <p>Logout</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{route('logout')}}" class="nav-link">
-                                <i class="nav-icon fas fa fa-sign-out"></i>
-                                <p>
-                                    Logout
-                                </p>
-                            </a>
-                        </li>
+
+                        <script>
+                            function confirmLogout() {
+                                if (confirm('Apakah Anda yakin ingin keluar?')) {
+                                    window.location.href = "{{ route('logout') }}";
+                                }
+                            }
+                        </script>
                     </ul>
                 </nav>
             </div>
@@ -152,14 +150,14 @@
                                 </div>
                                 @endif
                                 <div class="mt-3">
-                                    <a class="btn btn-success" href="{{Route('export')}}">Cetak Excel</a>
+                                    <a class="btn btn-success" href="{{Route('export_transaksi')}}">Cetak Excel</a>
                                 </div>
                                 <div class="card-tools">
                                 </div>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <div class="table-responsive">
+                                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
                                     <table class="table table-bordered">
                                         <thead class="middle">
                                             <tr>
@@ -170,7 +168,6 @@
                                                 <th>Tanggal Pembayaran</th>
                                                 <th>Status Transaksi</th>
                                                 <th>Deskripsi Transaksi</th>
-                                                <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody class="table-group-divider">
@@ -181,11 +178,12 @@
                                                 <td>{{ number_format($transaksi->total_bayar, 0, ',', '.') }}</td> <!-- Format jumlah pembayaran -->
                                                 <td>{{ $transaksi->jenis_pembayaran }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($transaksi->waktu_transaksi)->format('d-m-Y H:i') }}</td> <!-- Format tanggal -->
-                                                <td>{{ $transaksi->status_transaksi }}</td>
-                                                <td>{{ $transaksi->deskripsi }}</td>
                                                 <td>
-
+                                                    <span class="badge {{ $transaksi->status_transaksi == 'paid' ? 'bg-success' : 'bg-danger' }}">
+                                                        {{ ucfirst($transaksi->status_transaksi) }}
+                                                    </span>
                                                 </td>
+                                                <td>{{ $transaksi->deskripsi }}</td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -218,9 +216,6 @@
                                 <div>
                                     <form class="row g-3 mb-4" method="GET" action="{{ route('pembayaran_santri') }}">
                                         <div class="col-md-3">
-                                            <input type="text" class="form-control" name="search_santri" placeholder="Cari berdasarkan nama santri" value="{{ request()->input('search_santri') }}">
-                                        </div>
-                                        <div class="col-md-3">
                                             <input type="text" name="search_tagihan" class="form-control" placeholder="Cari Nama Tagihan" value="{{ request('search_tagihan') }}">
                                         </div>
                                         <div class="col-md-3">
@@ -243,7 +238,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-auto mt-3">
+                                        <div class="col-auto">
                                             <button type="submit" class="btn btn-primary">Cari</button>
                                             <a href="{{ route('pembayaran_santri') }}" class="btn btn-secondary">Reset</a>
                                         </div>
@@ -257,28 +252,29 @@
                                     <!-- /.card-header -->
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table class="table table-bordered">
-                                                <thead class="middle">
+                                            <table class="table table-striped">
+                                                <thead>
                                                     <tr>
-                                                        <th>Nama Santri</th>
+                                                        <th>No</th>
                                                         <th>Nama Tagihan</th>
-                                                        <th>Jumlah Tagihan</th>
-                                                        <th>Status Tagihan</th>
+                                                        <th>Nominal Tagihan</th>
+                                                        <th>Batas Waktu</th>
+                                                        <th>Kelas</th>
+                                                        <th>Tingkat</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody class="table-group-divider">
-                                                    @foreach ($tagihans as $tagihan)
+                                                <tbody>
+                                                    @php
+                                                    $no = 1;
+                                                    @endphp
+                                                    @foreach($tagihans as $tag)
                                                     <tr>
-                                                        <td>{{ optional($tagihan->Santri)->nama ?? 'Nama Tidak Ditemukan' }}</td>
-                                                        <td>{{ $tagihan->nama_tagihan }}</td>
-                                                        <td>{{ number_format($tagihan->nominal_tagihan, 0, ',', '.') }}</td>
-                                                        <td>
-                                                            @if ($tagihan->status_tagihan == 'paid')
-                                                            Sudah Dibayar
-                                                            @else
-                                                            Belum Dibayar
-                                                            @endif
-                                                        </td>
+                                                        <td>{{ $no++ }}</td>
+                                                        <td>{{ $tag->nama_tagihan }}</td>
+                                                        <td>Rp. {{ number_format($tag->nominal_tagihan, 0, ',', '.') }}</td>
+                                                        <td>{{ $tag->waktu_tagihan }}</td>
+                                                        <td>{{ $tag->id_kelas }}</td>
+                                                        <td>{{ $tag->id_tingkat }}</td>
                                                     </tr>
                                                     @endforeach
                                                 </tbody>

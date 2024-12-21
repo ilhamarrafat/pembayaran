@@ -18,7 +18,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'password', 'role_id',
+        'name',
+        'email',
+        'password',
+        'role_id',
+        'id'
     ];
 
     /**
@@ -41,7 +45,7 @@ class User extends Authenticatable
     ];
     public function santri()
     {
-        return $this->hasOne(Santri::class);
+        return $this->hasOne(Santri::class, 'user_id', 'id');
     }
     public function admin()
     {

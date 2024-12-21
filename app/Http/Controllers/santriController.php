@@ -16,25 +16,47 @@ class santriController extends Controller
 {
     public function index(Request $request)
     {
+        // Mendapatkan pengguna yang sedang login
+        $user = Auth::user();
 
-        $santri = Santri::all();
-        $idSantri = Auth::user()->santri->Id_santri;
+        // Cek  relasi dengan model Santri
+        if ($user && $user->santri) {
+            $idSantri = $user->santri->Id_santri;
 
-        $paidTransaksi = Transaksi::where('Id_santri', $idSantri)
-            ->where('status_transaksi', 'paid')
-            ->get();
+            // Ambil data transaksi yang sudah dibayar
+            $paidTransaksi = Transaksi::where('Id_santri', $idSantri)
+                ->where('status_transaksi', 'paid')
+                ->get();
 
-        $unpaidTransaksi = Transaksi::where('Id_santri', $idSantri)
-            ->where('status_transaksi', 'unpaid')
-            ->get();
+            // Ambil data transaksi yang belum dibayar
+            $unpaidTransaksi = Transaksi::where('Id_santri', $idSantri)
+                ->where('status_transaksi', 'unpaid')
+                ->get();
 
-        $jumlahUser = $santri->count();
-        $jumlahTransaksi = $paidTransaksi->count();
-        $totalDibayar = $paidTransaksi->sum('total_bayar');
-        $jumlahUnpaidTagihan = $unpaidTransaksi->count();
-        $totalUnpaidTagihan = $unpaidTransaksi->sum('total_bayar');
-        return view('santri.dashboard', compact('santri', 'jumlahUser', 'jumlahTransaksi', 'totalDibayar', 'jumlahUnpaidTagihan', 'totalUnpaidTagihan'));
+
+            // Mengambil data jumlah santri dan transaksi
+            $santri = Santri::all();
+            $jumlahUser = $santri->count();
+            $jumlahTransaksi = $paidTransaksi->count();
+            $totalDibayar = $paidTransaksi->sum('total_bayar');
+            $jumlahUnpaidTagihan = $unpaidTransaksi->count();
+            $totalUnpaidTagihan = $unpaidTransaksi->sum('total_bayar');
+
+            // Kembalikan data ke view dengan compact
+            return view('santri.dashboard', compact(
+                'santri',
+                'jumlahUser',
+                'jumlahTransaksi',
+                'totalDibayar',
+                'jumlahUnpaidTagihan',
+                'totalUnpaidTagihan'
+            ));
+        } else {
+            // Jika tidak ada relasi santri, redirect dengan pesan error
+            return redirect()->route('index.santri')->with('error', 'Santri tidak ditemukan.');
+        }
     }
+
 
 
     public function create()

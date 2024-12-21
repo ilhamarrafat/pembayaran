@@ -15,9 +15,10 @@ class ProfileController extends Controller
      */
     public function index(Request $request)
     {
-        $admins = Admin::all();
-        // dd(Auth::user(), Auth::user()->admin);
-        return view('superadmin.profile', compact('admins'));
+        $user = Auth::user();
+        $admin = admin::where('user_id', Auth::id())->first();
+        // dd($admin);
+        return view('superadmin.profile', compact('admin'));
     }
 
     /**
@@ -70,12 +71,8 @@ class ProfileController extends Controller
      */
     public function show(string $id_admin)
     {
-        $admin = Admin::find($id_admin);
-
-        if (!$admin) {
-            return redirect()->route('profile.index')->with('error', 'Admin not found.');
-        }
-
+        $admin = admin::where('user_id', Auth::id())->first();
+        dd($admin);
         return view('superadmin.profile', compact('admin'))
             ->with('success', 'User created successfully.');
     }
@@ -85,13 +82,18 @@ class ProfileController extends Controller
      */
     public function edit(string $id_admin)
     {
-        $admin = Admin::find($id_admin);
-        dd($admin);
+        $user = Auth::user();
+
+        // Ambil admin berdasarkan user_id
+        $admin = Admin::where('user_id', $user->id)->first();
+
+        // Jika admin tidak ditemukan
         if (!$admin) {
-            return redirect()->route('profile.index')->with('error', 'Admin not found.');
+            return redirect()->route('profile')->with('error', 'Admin not found.');
         }
+
         return view('superadmin.profile', compact('admin'))
-            ->with('success', 'Berita berhasil diedit.');
+            ->with('success', 'Profile berhasil diedit.');
     }
 
     /**

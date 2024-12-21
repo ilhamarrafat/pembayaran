@@ -3,7 +3,7 @@
 <!-- Bootstrap 4 -->
 <script src="{{asset('template/assets/Admin/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 <!-- AdminLTE App -->
-<script src="{{asset('template/assets/Admin/dist/js/adminlte.min.js')}}"></script>
+<!-- <script src="{{asset('template/assets/Admin/dist/js/adminlte.min.js')}}"></script> -->
 <!-- jQuery UI 1.11.4 -->
 <script src="{{asset('template/assets/Admin/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
@@ -11,7 +11,7 @@
   $.widget.bridge('uibutton', $.ui.button)
 </script>
 <!-- ChartJS -->
-<script src="{{asset('template/assets/Admin/plugins/chart.js/Chart.min.js')}}"></script>
+<!-- <script src="{{asset('template/assets/Admin/plugins/chart.js/Chart.min.js')}}"></script> -->
 <!-- Sparkline -->
 <script src="{{asset('template/assets/Admin/plugins/sparklines/sparkline.js')}}"></script>
 <!-- jQuery Knob Chart -->
@@ -29,3 +29,4 @@
 <script src="{{asset('template/assets/Admin/dist/js/adminlte.js')}}"></script>
 <!-- AdminLTE App -->
 <script src="{{asset('template/assets/Admin/dist/js/adminlte.min.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>

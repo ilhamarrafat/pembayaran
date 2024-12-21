@@ -59,8 +59,8 @@ class AuthController extends Controller
                 'password' => 'required',
             ],
             [
-                'email.required' => 'email wajib diisi',
-                'password.required' => 'email wajib diisi',
+                'email.required' => 'Email wajib diisi',
+                'password.required' => 'Password wajib diisi', // Perbaikan pesan
             ]
         );
 
@@ -71,19 +71,19 @@ class AuthController extends Controller
 
         if (Auth::attempt($infologin)) {
             if (Auth::user()->role_id == '3') {
-                return redirect('/dashboard/santri');
+                return redirect('/dashboard/santri')->with('success', 'Login berhasil!');
             } else if (Auth::user()->role_id == '2') {
-                return redirect('/dashboard/admin');
+                return redirect('/dashboard/admin')->with('success', 'Login berhasil!');
             } else if (Auth::user()->role_id == '1') {
-                return redirect('/dashboard/superadmin');
+                return redirect('/dashboard/superadmin')->with('success', 'Login berhasil!');
             }
         } else {
-            return redirect('')->withErrors('email dan password salah')->withInput();
+            return redirect()->back()->with('error', 'Email dan password salah')->withInput();
         }
     }
     function logout()
     {
         Auth::logout();
-        return redirect('');
+        return redirect('/');
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ExportData;
 use App\Exports\ExportDataTagihan;
+use App\Exports\ExportDataTransaksi;
 use App\Models\kelas;
 use App\Models\tingkat;
 use App\Models\transaksi;
@@ -13,6 +13,7 @@ use App\Models\tagihan;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Midtrans\Transaction;
 use Mpdf\Mpdf;
@@ -44,7 +45,7 @@ class PaymentController extends Controller
         if ($tingkatTagihan) {
             $queryTagihan->where('id_tingkat', $tingkatTagihan);
         }
-        $tagihans = $queryTagihan->paginate(5);
+        $tagihans = $queryTagihan->paginate(100);
         // dd($tagihans->toArray());
         $kelas = kelas::all();
         $tingkat = tingkat::all();
@@ -61,7 +62,7 @@ class PaymentController extends Controller
             $queryTransaksi->where('status_transaksi', $statusTransaksi);
         }
 
-        $transaksis = $queryTransaksi->paginate(5);
+        $transaksis = $queryTransaksi->paginate(100);
 
 
         // Return ke view dengan data yang sudah difilter
@@ -82,42 +83,72 @@ class PaymentController extends Controller
     }
     public function store(Request $request)
     {
+        // Validasi data input
         $request->validate([
             'id_kelas' => 'required|exists:kelas,id_kelas',
             'id_tingkat' => 'required|exists:tingkat,id_tingkat',
             'nama_tagihan' => 'required|string|max:255',
             'nominal_tagihan' => 'required|string',
             'waktu_tagihan' => 'required|date',
+            'periode_tagihan' => 'required|in:satu_periode,per_periode', // Validasi radio button
         ]);
 
-        // Menghapus format rupiah dan hanya mengambil angka
-        $nominal_tagihan = preg_replace('/[^\d]/', '', $request->nominal_tagihan);
-
-        // Mendapatkan santri berdasarkan kelas dan tingkat
+        // Mendapatkan data santri berdasarkan kelas dan tingkat
         $santris = Santri::where('id_kelas', $request->id_kelas)
             ->where('id_tingkat', $request->id_tingkat)
+            ->where('status', 'aktif')
             ->get();
-        // dd($santris);
 
-        // Cek jika tidak ada santri yang ditemukan
         if ($santris->isEmpty()) {
             return redirect()->back()->withErrors(['error' => 'Tidak ada santri ditemukan untuk kelas dan tingkat ini.']);
         }
-
         foreach ($santris as $santri) {
-            // Membuat tagihan baru untuk setiap santri
-            $tagihan = new Tagihan();
-            $tagihan->Id_santri = $santri->Id_santri;
-            $tagihan->id_kelas = $request->id_kelas;
-            $tagihan->id_tingkat = $request->id_tingkat;
-            $tagihan->nama_tagihan = $request->nama_tagihan;
-            $tagihan->nominal_tagihan = $nominal_tagihan;
-            $tagihan->waktu_tagihan = $request->waktu_tagihan;
-            $tagihan->save();
+
+            $nominal_tagihan = preg_replace('/[^\d]/', '', $request->nominal_tagihan);
+            // Jika tagihan hanya satu periode
+            if ($request->periode_tagihan === 'satu_periode') {
+                $tagihan = new Tagihan();
+                $tagihan->Id_santri = $santri->Id_santri;
+                $tagihan->id_kelas = $request->id_kelas;
+                $tagihan->id_tingkat = $request->id_tingkat;
+                $tagihan->nama_tagihan = $request->nama_tagihan;
+                $tagihan->nominal_tagihan = $nominal_tagihan;
+                $tagihan->waktu_tagihan = $request->waktu_tagihan;
+                $tagihan->periode_tagihan = $request->periode_tagihan;
+
+                if ($tagihan->save()) {
+                    Log::info('Tagihan satu periode berhasil disimpan', ['tagihan' => $tagihan]);
+                } else {
+                    Log::error(
+                        'Gagal menyimpan tagihan satu periode',
+                        ['data' => $tagihan]
+                    );
+                }
+            }
+            // Jika tagihan per bulan selama setahun
+            else if ($request->periode_tagihan === 'per_periode') {
+                $waktu_tagihan = $request->waktu_tagihan;  // Waktu mulai tagihan
+                for ($i = 0; $i < 12; $i++) {
+                    // Hitung setiap bulan
+                    $bulan = date('Y-m-d', strtotime("+$i month", strtotime($waktu_tagihan)));
+                    $tagihan = new Tagihan();
+                    $tagihan->Id_santri = $santri->Id_santri;
+                    $tagihan->id_kelas = $request->id_kelas;
+                    $tagihan->id_tingkat = $request->id_tingkat;
+                    $tagihan->nama_tagihan = $request->nama_tagihan;
+                    $tagihan->nominal_tagihan = $nominal_tagihan;
+                    $tagihan->waktu_tagihan = $bulan;
+                    $tagihan->periode_tagihan = $request->periode_tagihan;
+                    $tagihan->save();
+                }
+            }
         }
-        // dd($tagihan);
+
+        // dd($request->all());
+
         return redirect()->route('pembayaran.index')->with('success', 'Tagihan berhasil ditambahkan.');
     }
+
 
     public function show($Id_tagihan, $Id_santri)
     {
@@ -202,7 +233,7 @@ class PaymentController extends Controller
 
     public function export_tagihan()
     {
-        return Excel::download(new ExportDataTagihan, 'DataTagihanSantri.xlsx');
+        return Excel::download(new ExportDataTransaksi, 'DataTransaksiSantri.xlsx');
     }
     public function transaksi(Request $request)
     {
@@ -240,71 +271,42 @@ class PaymentController extends Controller
         return view('pembayaran.transaksi', compact('transaksis'))
             ->with('i', ($request->input('page', 1) - 1) * $pagination);
     }
-    public function export(Request $request)
+    public function export_tagihan_santri()
     {
-        $searchTagihan = $request->input('search_tagihan');
-        $kelasTagihan = $request->input('kelas_tagihan');
-        $tingkatTagihan = $request->input('tingkat_tagihan');
+        return Excel::download(new ExportDataTagihan, 'DataTagihanSantri.xlsx');
+    }
+    public function bayarPdf($id)
+    {
+        // Ambil data transaksi dan relasi tagihan
+        $transaksi = Transaksi::with('tagihan')->findOrFail($id);
 
-        $queryTagihan = Tagihan::query();
+        // Siapkan data untuk view PDF
+        $data = [
+            'transaksi' => $transaksi,
+            'santri' => $transaksi->santri, // relasi ke model Santri
+            'tagihan' => $transaksi->tagihan,
+        ];
 
-        // Pencarian berdasarkan nama tagihan
-        if ($searchTagihan) {
-            $queryTagihan->where('nama_tagihan', 'like', '%' . $searchTagihan . '%');
-        }
+        // Render HTML dari view untuk PDF
+        $html = view('pembayaran.cetak', $data)->render();
 
-        // Filter berdasarkan kelas
-        if ($kelasTagihan) {
-            $queryTagihan->where('id_kelas', $kelasTagihan);
-        }
+        // Setel opsi dompdf
+        $options = new \Dompdf\Options();
+        $options->set('isRemoteEnabled', true); // Aktifkan remote resource
 
-        // Filter berdasarkan tingkat
-        if ($tingkatTagihan) {
-            $queryTagihan->where('id_tingkat', $tingkatTagihan);
-        }
+        // Inisialisasi dompdf dengan opsi
+        $dompdf = new \Dompdf\Dompdf($options);
 
-        $tagihans = $queryTagihan->get();
+        // Load HTML ke dalam dompdf dan generate PDF
+        $dompdf->loadHtml($html);
 
-        // Inisialisasi mPDF
-        $mpdf = new Mpdf();
+        // (Optional) Set ukuran kertas dan orientasi
+        $dompdf->setPaper('A4', 'portrait');
 
-        // Buat HTML untuk export
-        $html = '
-        <h1>Daftar Tagihan</h1>
-        <table border="1" cellspacing="0" cellpadding="10">
-            <thead>
-                <tr>
-                    <th>Nama Tagihan</th>
-                    <th>Nominal Tagihan</th>
-                    <th>Waktu Tagihan</th>
-                    <th>Kelas</th>
-                    <th>Tingkat</th>
-                </tr>
-            </thead>
-            <tbody>
-    ';
+        // Render PDF
+        $dompdf->render();
 
-        foreach ($tagihans as $tagihan) {
-            $html .= '
-            <tr>
-                <td>' . $tagihan->nama_tagihan . '</td>
-                <td>' . number_format($tagihan->nominal_tagihan, 0, ',', '.') . '</td>
-                <td>' . $tagihan->waktu_tagihan . '</td>
-                <td>' . ($tagihan->kelas->nama_kelas ?? '-') . '</td>
-                <td>' . ($tagihan->tingkat->nama_tingkat ?? '-') . '</td>
-            </tr>
-        ';
-        }
-
-        $html .= '
-            </tbody>
-        </table>
-    ';
-
-        // Tulis HTML ke file PDF
-        $mpdf->WriteHTML($html);
-
-        // Output ke file
-        $mpdf->Output('tagihan.pdf', 'D'); // 'D' untuk download
+        // Output file PDF ke browser untuk diunduh
+        return $dompdf->stream('tagihan_' . $transaksi->id_transaksi . '.pdf', ['Attachment' => true]); // 'Attachment' => true untuk download
     }
 }

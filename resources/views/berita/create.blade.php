@@ -14,7 +14,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
           <div class="image">
-            <img src="{{asset('template/assets/Admin/dist/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
+            <img src="{{ url('profile/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
           </div>
           <div class="info">
             <a>Hello,
@@ -33,7 +33,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{route('pembayaran')}}" class="nav-link">
+              <a href="{{route('pembayaran.index')}}" class="nav-link">
                 <i class='nav-icon fas fa-wallet' style='font-size:20px'></i>
                 <p>
                   Pembayaran
@@ -41,7 +41,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{route('berita')}}" class="nav-link">
+              <a href="{{route('berita')}}" class="nav-link active">
                 <i class="nav-icon fa fa-newspaper-o" style="font-size:20px"></i>
                 <p>
                   Berita
@@ -57,18 +57,10 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{route('data')}}" class="nav-link active">
+              <a href="{{route('data')}}" class="nav-link">
                 <i class="nav-icon fas fa-database"></i>
                 <p>
                   Data
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="pages/gallery.html" class="nav-link">
-                <i class="nav-icon fa fa-envelope"></i>
-                <p>
-                  Ajuan Keterlambatan
                 </p>
               </a>
             </li>
@@ -87,48 +79,72 @@
   </aside>
   <section>
     <div class="content-wrapper">
-      <div class="container ml-5">
-        <div class="row">
-          <div class="col-md-12 mt-2 ">
-            <h1>Tambah Berita</h1>
-            @if ($errors->any())
-            <div class="alert alert-danger">
-              <strong>Whoops!</strong> Ada kesalahan saat anda mengupload<br><br>
-              <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-              </ul>
-            </div>
-            <div class=" card" style="width: 30rem;">
-              <div class=" card-body">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="row justify-content-center">
+          <!-- Left col -->
+          <div class="col-md-8">
+            <div class="card mt-5 shadow-lg" style="border-radius: 10px;">
+              <div class="card-body p-4">
+                <h3 class="card-header text-center bg-primary text-white mb-4" style="border-radius: 10px;">
+                  <b>TAMBAH BERITA</b>
+                </h3>
+
+                <!-- Error Display -->
+                @if ($errors->any())
+                <div class="alert alert-danger">
+                  <strong>Whoops!</strong> Ada kesalahan saat anda mengupload<br><br>
+                  <ul>
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                  </ul>
+                </div>
                 @endif
+
+                <!-- Success Message -->
                 @if ($message = Session::get('success'))
+                <div class="alert alert-success">
+                  {{ $message }}
+                </div>
                 @endif
+
+                <!-- Form -->
                 <form method="POST" action="{{ route('berita.store') }}" enctype="multipart/form-data">
                   @csrf
                   @method('POST')
-                  <strong>Upload Foto</strong>
-                  <div class="input-group mb-2 col-md-8">
-                    <input type="file" placeholder="uploadfile" name="gambar" class="form-control" id="gambar">
-                    <label class="input-group-text" for="gambar">Upload</label>
+
+                  <!-- Upload Foto -->
+                  <div class="mb-3">
+                    <label for="gambar" class="form-label"><strong>Upload Foto</strong></label>
+                    <input type="file" name="gambar" class="form-control" id="gambar" required>
                   </div>
-                  <div class="form-group mb-2 col-md-8">
-                    <strong>Judul</strong>
-                    <input type="text" id="judul" name="judul" class="form-control" placeholder="Judul">
+
+                  <!-- Judul Berita -->
+                  <div class="mb-3">
+                    <label for="judul" class="form-label"><strong>Judul</strong></label>
+                    <input type="text" name="judul" class="form-control" id="judul" placeholder="Judul Berita" required>
                   </div>
-                  <div class="form-group mb-2 col-md-8">
-                    <strong>Isi</strong>
-                    <textarea type="text" placeholder="isi berita" name="isi" class="form-control" id="isi"></textarea>
+
+                  <!-- Isi Berita -->
+                  <div class="mb-3">
+                    <label for="isi" class="form-label"><strong>Isi Berita</strong></label>
+                    <textarea name="isi" class="form-control" id="isi" rows="5" placeholder="Isi berita" required></textarea>
                   </div>
-                  <button type="submit" class="btn btn-primary mt-3">Submit</button>
+
+                  <!-- Submit Button -->
+                  <div class="text-center">
+                    <button type="submit" class="btn btn-primary mt-3" style="width: 100px;">Submit</button>
+                  </div>
                 </form>
+
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
   </section>
   <!-- /.sidebar-menu -->
   </div>

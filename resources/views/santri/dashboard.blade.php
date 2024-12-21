@@ -50,19 +50,9 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{route('sktm')}}" class="nav-link">
-                                <i class="nav-icon fa fa-envelope"></i>
-                                <p>
-                                    Ajuan Keterlambatan
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{route('logout')}}" class="nav-link">
-                                <i class="nav-icon  fas fa fa-sign-out"></i>
-                                <p>
-                                    Logout
-                                </p>
+                            <a href="{{ route('logout') }}" class="nav-link" onclick="confirmLogout(event);">
+                                <i class="nav-icon fa fa-sign-out"></i>
+                                <p>Logout</p>
                             </a>
                         </li>
                     </ul>
@@ -79,6 +69,19 @@
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
             <div class="content-header">
+                @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                @endif
+
+                @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                @endif
                 @yield('content')
                 <div class="container-fluid">
                     <div class="row mb-2">
@@ -130,7 +133,7 @@
                             <div class="info-box mb-3">
                                 <span class="info-box-icon bg-success elevation-1"><i class="fa fa-bar-chart"></i></span>
                                 <div class="info-box-content">
-                                    <span class="info-box-text">Tagihan Bulan Ini</span>
+                                    <span class="info-box-text">Total Tagihan</span>
                                     <span class="info-box-number">
                                         Rp. {{ number_format($totalUnpaidTagihan, 0, ',', '.') }}
                                     </span>
@@ -177,3 +180,25 @@
 </body>
 @include('dadmin.style')
 @include('dadmin.script')
+<script>
+    window.onload = function() {
+        var successMessage = "{{ session('success') }}";
+        var errorMessage = "{{ session('error') }}";
+
+        if (successMessage) {
+            alert(successMessage);
+        }
+
+        if (errorMessage) {
+            alert(errorMessage);
+        }
+    }
+</script>
+<script>
+    function confirmLogout(event) {
+        event.preventDefault();
+        if (confirm('Apakah Anda yakin ingin keluar?')) {
+            window.location.href = "{{ route('logout') }}";
+        }
+    }
+</script>

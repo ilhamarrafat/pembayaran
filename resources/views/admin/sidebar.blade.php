@@ -74,21 +74,19 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="pages/gallery.html" class="nav-link">
-                            <i class="nav-icon fa fa-envelope"></i>
-                            <p>
-                                Ajuan Keterlambatan
-                            </p>
+                        <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault(); confirmLogout();">
+                            <i class="nav-icon fas fa-sign-out"></i>
+                            <p>Logout</p>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{route('logout')}}" class="nav-link">
-                            <i class="nav-icon fas fa fa-sign-out"></i>
-                            <p>
-                                Logout
-                            </p>
-                        </a>
-                    </li>
+
+                    <script>
+                        function confirmLogout() {
+                            if (confirm('Apakah Anda yakin ingin keluar?')) {
+                                window.location.href = "{{ route('logout') }}";
+                            }
+                        }
+                    </script>
                 </ul>
             </nav>
         </div>

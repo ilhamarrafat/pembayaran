@@ -3,7 +3,6 @@
 namespace App\Exports;
 
 use App\Models\Tagihan;
-use App\Models\transaksi;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
@@ -17,9 +16,9 @@ class ExportDataTagihan implements FromCollection, WithHeadings
     public function collection()
     {
         // Menggunakan eager loading untuk mengoptimalkan query
-        return transaksi::with(['santri'])
+        return Tagihan::with(['santri'])
             ->orderBy('id_transaksi', 'asc')
-            ->get(['id_transaksi', 'Id_santri', 'total_bayar', 'jenis_pembayaran', 'waktu_transaksi', 'status_transaksi', 'deskripsi']);
+            ->get(['Id_tagihan', 'nama_tagihan', 'id_tingkat', 'id_kelas', 'nominal_tagihan',  'waktu_tagihan', 'id_transaksi']);
     }
 
     /**
@@ -30,13 +29,13 @@ class ExportDataTagihan implements FromCollection, WithHeadings
     public function headings(): array
     {
         return [
-            'Nomor Transaksi',
-            'Nama Santri',
-            'Jumlah Pembayaran',
-            'Metode Pembayaran',
-            'Tanggal Pembayaran',
-            'Status Transaksi',
-            'Deskripsi Transaksi',
+            'Id',
+            'Nama Tagihan',
+            'Tingkat',
+            'Kelas',
+            'Nominal',
+            'Waktu',
+            'Id Transaksi',
         ];
     }
 }

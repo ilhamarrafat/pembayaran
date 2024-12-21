@@ -15,7 +15,7 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="{{ asset('foto/' . Auth::user()->admin) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
+                        <img src="{{ url('profile/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
                     </div>
                     <div class="info">
                         <a>Hello,
@@ -50,7 +50,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{route('profile_admin')}}" class="nav-link">
+                            <a href="{{route('profile_admin')}}" class="nav-link active">
                                 <i class="nav-icon far fa-address-card"></i>
                                 <p>
                                     Profile
@@ -58,7 +58,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{route('data_santri')}}" class="nav-link active">
+                            <a href="{{route('data_santri')}}" class="nav-link">
                                 <i class="nav-icon fas fa-database"></i>
                                 <p>
                                     Data
@@ -66,21 +66,19 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/gallery.html" class="nav-link">
-                                <i class="nav-icon fa fa-envelope"></i>
-                                <p>
-                                    Ajuan Keterlambatan
-                                </p>
+                            <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault(); confirmLogout();">
+                                <i class="nav-icon fas fa-sign-out"></i>
+                                <p>Logout</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{route('logout')}}" class="nav-link">
-                                <i class="nav-icon fas fa fa-sign-out"></i>
-                                <p>
-                                    Logout
-                                </p>
-                            </a>
-                        </li>
+
+                        <script>
+                            function confirmLogout() {
+                                if (confirm('Apakah Anda yakin ingin keluar?')) {
+                                    window.location.href = "{{ route('logout') }}";
+                                }
+                            }
+                        </script>
                     </ul>
                 </nav>
             </div>
@@ -91,21 +89,19 @@
                 <div class="container ml-5">
                     <div class="row">
                         <div class="col-md-12 mt-2 ">
+                            @if($admins->isNotEmpty())
                             <h1>Edit Profile</h1>
-
                             @foreach($admins as $admin)
-                            <form action="{{ route('profile_update_admin', $admin->id_admin) }}" method="POST" enctype="multipart/form-data">
+                            <form method="POST" action="{{ route('profile_update_admin', $admin->id_admin) }}" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
                                 <div class="card" style="width: 18rem;">
                                     <div class="card-body">
                                         @if($admin->foto)
-                                        <img src=" {{ url('foto/'.$admin->foto) }}" style="width: 100px;" class="card-img-top mb-2" alt="...">
+                                        <img src="{{ url('profile/' . $admin->foto) }}" style="width: 100px;" class="card-img-top mb-2" alt="...">
                                         @else
                                         <p>No photo available</p>
                                         @endif
-
-
                                         <div class="input-group">
                                             <input type="file" name="foto" class="form-control" id="foto">
                                             <label class="input-group-text mb-2" for="foto">Upload</label>
@@ -123,8 +119,11 @@
                                             <input class="form-control mb-2" id="password" name="password" value="">
                                         </div>
                                         <button type="submit" class="mt-2 btn btn-primary">Submit</button>
-                                        @endforeach
                             </form>
+                            @endforeach
+                            @else
+                            <p>No admin data available</p>
+                            @endif
                         </div>
         </section>
         <!-- /.sidebar -->

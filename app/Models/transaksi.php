@@ -30,7 +30,6 @@ class transaksi extends Model
     {
         return $this->belongsTo(Santri::class, 'Id_santri');
     }
-
     public function tagihan()
     {
         return $this->belongsToMany(Tagihan::class, 'transaksi_tagihan', 'id_transaksi', 'id_tagihan');

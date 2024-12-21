@@ -15,7 +15,7 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="{{ asset('foto/' . Auth::user()->admin) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
+                        <img src="{{ url('profile/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
                     </div>
                     <div class="info">
                         <a>Hello,
@@ -42,7 +42,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{route('berita_show')}}" class="nav-link">
+                            <a href="{{route('berita_show')}}" class="nav-link active">
                                 <i class="nav-icon fa fa-newspaper-o" style="font-size:20px"></i>
                                 <p>
                                     Berita
@@ -58,7 +58,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{route('data_santri')}}" class="nav-link active">
+                            <a href="{{route('data_santri')}}" class="nav-link ">
                                 <i class="nav-icon fas fa-database"></i>
                                 <p>
                                     Data
@@ -66,21 +66,19 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/gallery.html" class="nav-link">
-                                <i class="nav-icon fa fa-envelope"></i>
-                                <p>
-                                    Ajuan Keterlambatan
-                                </p>
+                            <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault(); confirmLogout();">
+                                <i class="nav-icon fas fa-sign-out"></i>
+                                <p>Logout</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{route('logout')}}" class="nav-link">
-                                <i class="nav-icon fas fa fa-sign-out"></i>
-                                <p>
-                                    Logout
-                                </p>
-                            </a>
-                        </li>
+
+                        <script>
+                            function confirmLogout() {
+                                if (confirm('Apakah Anda yakin ingin keluar?')) {
+                                    window.location.href = "{{ route('logout') }}";
+                                }
+                            }
+                        </script>
                     </ul>
                 </nav>
             </div>
@@ -91,8 +89,6 @@
                 <div class="container-fluid">
                     <nav class="navbar navbar-light bg-light">
                         <div class="col-md-12">
-                            <button type="button" class="btn btn-success col-md-2 mb-2">Cetak Excel</button>
-                            <button type="button" class="btn btn-warning col-md-2 mb-2">Cetak Pdf</button>
                             <div class="col-md-5 mb-10">
                                 <form class="row g-3">
                                     <div class="col-auto">

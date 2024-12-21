@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use App\Models\Santri;
 use Illuminate\Support\Facades\Auth;
@@ -31,6 +32,7 @@ class dashboardController extends Controller
     {
         $santri = Santri::all();
         $jumlahUser = $santri->count();
-        return view('superadmin.dashboard', compact('santri', 'jumlahUser'));
+        $admin = admin::where('user_id', Auth::id())->first();
+        return view('superadmin.dashboard', compact('admin', 'santri', 'jumlahUser'));
     }
 }

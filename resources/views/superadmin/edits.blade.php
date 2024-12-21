@@ -14,7 +14,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
           <div class="image">
-            <img src="{{ asset('foto/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
+            <img src="{{ url('profile/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
           </div>
           <div class="info">
             <a>Hello,
@@ -33,7 +33,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{route('pembayaran')}}" class="nav-link">
+              <a href="{{route('pembayaran.index')}}" class="nav-link">
                 <i class='nav-icon fas fa-wallet' style='font-size:20px'></i>
                 <p>
                   Pembayaran
@@ -65,132 +65,194 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="pages/gallery.html" class="nav-link">
-                <i class="nav-icon fa fa-envelope"></i>
-                <p>
-                  Ajuan Keterlambatan
-                </p>
+              <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault(); confirmLogout();">
+                <i class="nav-icon fa fa-sign-out"></i>
+                <p>Logout</p>
               </a>
             </li>
-            <li class="nav-item">
-              <a href="{{route('logout')}}" class="nav-link">
-                <i class="nav-icon fas fa fa-sign-out"></i>
-                <p>
-                  Logout
-                </p>
-              </a>
-            </li>
+
+            <script>
+              function confirmLogout() {
+                if (confirm('Apakah Anda yakin ingin keluar?')) {
+                  window.location.href = "{{ route('logout') }}";
+                }
+              }
+            </script>
           </ul>
         </nav>
       </div>
       <!-- /.sidebar -->
   </aside>
   <section>
-
     <div class="content-wrapper">
-
-      <div class="container ml-5">
-        <div class="row">
-          <div class="col-md-12">
-            <h1>Edit Santri</h1>
-            @if ($errors->any())
-            <div class="alert alert-danger">
-              <strong>Whoops!</strong> There were some problems with your input.<br><br>
-              <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-              </ul>
-            </div>
-            @endif
-
-            <form action="{{route('santri.update', ['Id_santri' => $santris])}}" method="POST" enctype="multipart/form-data">
-              @csrf
-              @method('PUT')
-              <div class="card" style="width: 30rem;">
-                <div class="card-body">
-                  @if ($santris->foto)
-                  <img class="mb-1" src="{{ asset('storage/'.$santris->foto) }}" style="width: 100px;">@endif
-                  @else
-                  <p>Foto tidak tersedia</p>
-                  @endif
-                  <input type="file" name="foto" id="foto" class="form-control" value="{{ $santris->foto }}">
-
-                  <strong>Nama</strong>
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="nama" name="nama" value="{{ $santris->nama }}">
-                  </div>
-                  <strong>User</strong>
-                  <div class="input-group mb-2">
-                    <select class="form-select" for="user_id" id="user_id" name="user_id">
-                      @foreach ($user as $user )
-                      <option value="{{$user->id}}">{{$user->name}}</option>
-                      @endforeach
-                    </select>
-                  </div>
-                  <strong>Tagihan</strong>
-                  <div class="input-group mb-2">
-                    <label class="input-group-text">Options</label>
-                    <select class="form-select col-md-8" for="Tagihan" id="Id_tagihan" name="Id_tagihan">
-                      @foreach ($tagihan as $tagihan )
-                      <option value="{{$tagihan->Id_tagihan}}">{{$tagihan->Id_tagihan}}</option>
-                      @endforeach
-                    </select>
-                  </div>
-                  <strong>Jenis Kelamin</strong>
-                  <div class="input-group mb-2">
-                    <label class="input-group-text">Options</label>
-                    <select class="form-select col-md-8" for="inputGroupSelect01" name="Jenis_kelamin" id="Jenis_kelamin">
-                      <option selected>{{ $santris->Jenis_kelamin }}</option>
-                      <option value="1">Laki-Laki</option>
-                      <option value="2">Perempuan</option>
-                    </select>
-                  </div>
-                  <div class="form-group mb-2">
-                    <strong>Tempat Lahir</strong>
-                    <input class="form-control" id="Tmp_lhr" name="Tmp_lhr" value="{{ $santris->Tmp_lhr }}">
-                  </div>
-                  <strong>Tanggal Lahir</strong>
-                  <div class="form-group mb-2">
-                    <input type="date" id="Tgl_lhr" name="Tgl_lhr" value="{{ $santris->Tgl_lhr }}">
-                  </div>
-                  <strong>Alamat</strong>
-                  <div class="form-group mb-2">
-                    <textarea class="form-control " id="alamat" name="alamat">{{ $santris->alamat }}</textarea>
-                  </div>
-                  <strong>Tahun Masuk</strong>
-                  <div class="form-group mb-2">
-                    <input type="date" id="Thn_masuk" name="Thn_masuk" class="form-control mb-2" value="{{ $santris->Thn_masuk }}">
-                  </div>
-                  <strong>Tahun Keluar</strong>
-                  <div class="form-group mb-2">
-                    <input type="date" id="Thn_keluar" name="Thn_keluar" class="form-control mb-2" value="{{ $santris->Thn_keluar }}">
-                  </div>
-                  <strong>Kelas</strong>
-                  <div class="form-group mb-2">
-                    <input type="text" id="kelas" name="kelas" class="form-control mb-2" value="{{ $santris->kelas }}">
-                  </div>
-                  <strong>Tingkat</strong>
-                  <div class="input-group mb-2">
-                    <label class="input-group-text " for="tingkat">Options</label>
-                    <select class="form-select col-md-8" id="tingkat" name="tingkat">
-                      <option selected>{{ $santris->tingkat }}</option>
-                      <option value="MTs">MTs</option>
-                      <option value="MA">MA</option>
-                      <option value="Salaf">Salaf</option>
-                    </select>
-                  </div>
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
+      <div class="content-header">
+        <div class="row justify-content-center">
+          <!-- Main container for the form -->
+          <div class="col-md-10">
+            <div class="card shadow-lg mt-5">
+              <div class="card-header bg-primary text-white text-center shadow-sm">
+                <h5><b>EDIT DATA SANTRI</b></h5>
               </div>
-            </form>
+              <div class="card-body">
+                @if ($errors->any())
+                <div class="alert alert-danger">
+                  <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                  <ul>
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                  </ul>
+                </div>
+                @endif
 
-          </div>
-        </div>
+                <form action="{{route('santri_update', ['Id_santri' => $santris])}}" method="POST" enctype="multipart/form-data">
+                  @csrf
+                  @method('PUT')
+                  <!-- Form row starts here -->
+                  <div class="row">
+                    <!-- Left Column -->
+                    <div class="col-md-6">
+                      @if ($santris->foto)
+                      <img class="mb-1" src="{{ asset('storage/'.$santris->foto) }}" style="width: 100px;">
+                      @else
+                      <p>Foto tidak tersedia</p>
+                      @endif
+                      <input type="file" name="foto" id="foto" class="form-control" value="{{ $santris->foto }}">
+
+                      <div class="form-group mb-3">
+                        <label for="nama"><strong>Nama</strong></label>
+                        <input type="text" name="nama" id="nama" class="form-control" value="{{ old('nama', $santris->nama) }}" required>
+                        @error('nama')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                      </div>
+                      <div class="form-group mb-3">
+                        <label for="wali_santri"><strong>Nama Wali</strong></label>
+                        <input type="text" name="wali_santri" id="wali_santri" class="form-control" value="{{ old('wali_santri', $santris->wali_santri) }}" required>
+                        @error('wali_santri')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                      </div>
+                      <!-- Email -->
+                      <div class="form-group mb-3">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" id="email" class="form-control" value="{{ old('email', $santri->user->email ?? '') }}">
+                      </div>
+
+                      <div class="form-group mb-3 position-relative">
+                        <label for="password"><strong>Password</strong></label>
+                        <div class="input-group">
+                          <input type="password" id="password" name="password" class="form-control" autocomplete="new-password">
+                          <span class="input-group-text" onclick="togglePassword()" style="cursor: pointer;">
+                            <i id="eyeIcon" class="fa fa-eye"></i>
+                          </span>
+                        </div>
+                        @error('password')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                      </div>
+
+                      <!-- Konfirmasi Password -->
+                      <div class="form-group mb-3">
+                        <label for="password_confirmation"><strong>Konfirmasi Password</strong></label>
+                        <input type="password" id="password_confirmation" name="password_confirmation" class="form-control">
+                      </div>
+                      <!--  -->
+                      <!-- jenis kelamin -->
+                      <strong>Jenis Kelamin</strong>
+                      <div class="input-group mb-2">
+                        <label class="input-group-text">Options</label>
+                        <select class="form-select col-md-8" for="inputGroupSelect01" name="Jenis_kelamin" id="Jenis_kelamin">
+                          <option selected>{{ $santris->Jenis_kelamin }}</option>
+                          <option value="1">Laki-Laki</option>
+                          <option value="2">Perempuan</option>
+                        </select>
+                      </div>
+                      <div class="form-group mb-2">
+                        <strong>Tempat Lahir</strong>
+                        <input class="form-control" id="Tmp_lhr" name="Tmp_lhr" value="{{ $santris->Tmp_lhr }}">
+                      </div>
+                    </div>
+                    <!-- Right Column -->
+                    <div class="col-md-6">
+
+                      <div class="form-group mb-2">
+                        <label for="Tgl_lhr"><strong>Tanggal Lahir</strong></label>
+                        <input type="date" id="Tgl_lhr" name="Tgl_lhr" class="form-control mb-2" value="{{ $santris->Tgl_lhr }}">
+                      </div>
+                      <strong>Alamat</strong>
+                      <div class="form-group mb-2">
+                        <textarea class="form-control " id="alamat" name="alamat">{{ $santris->alamat }}</textarea>
+                      </div>
+                      <strong>Tahun Masuk</strong>
+                      <div class="form-group mb-2">
+                        <input type="date" id="Thn_masuk" name="Thn_masuk" class="form-control mb-2" value="{{ $santris->Thn_masuk }}">
+                      </div>
+                      <strong>Tahun Keluar</strong>
+                      <div class="form-group mb-2">
+                        <input type="date" id="Thn_keluar" name="Thn_keluar" class="form-control mb-2" value="{{ $santris->Thn_keluar }}">
+                      </div>
+                      <strong>Kelas</strong>
+                      <div class="form-group mb-2">
+                        <select name="id_kelas" class="form-control" required>
+                          @foreach ($kelas as $kelas_item)
+                          <option value="{{ $kelas_item->id_kelas }}"
+                            {{ $kelas_item->id_kelas == $santris->id_kelas ? 'selected' : '' }}>
+                            {{ $kelas_item->kelas }}
+                          </option>
+                          @endforeach
+                        </select>
+                      </div>
+
+                      <!-- Tingkat -->
+                      <strong>Tingkat</strong>
+                      <div class="form-group mb-2">
+                        <select name="id_tingkat" class="form-control" required>
+                          @foreach ($tingkat as $tingkat_item)
+                          <option value="{{ $tingkat_item->id_tingkat }}"
+                            {{ $tingkat_item->id_tingkat == $santris->id_tingkat ? 'selected' : '' }}>
+                            {{ $tingkat_item->tingkat }}
+                          </option>
+                          @endforeach
+                        </select>
+                      </div>
+                      <strong>Status</strong>
+                      <div class="input-group mb-2">
+                        <label class="input-group-text">Options</label>
+                        <select class="form-select col-md-8" for="inputGroupSelect01" name="status" id="status">
+                          <option selected>{{ $santris->status }}</option>
+                          <option value="1">Aktif</option>
+                          <option value="2">Tidak Aktif</option>
+                        </select>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                  </div>
+                </form>
+
+              </div>
+            </div>
   </section>
   <!-- /.sidebar-menu -->
   </div>
   </div>
+  <script>
+    // Fungsi untuk toggle visibilitas password
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const eyeIcon = document.getElementById('eyeIcon');
+
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+      }
+    }
+  </script>
 </body>
 @include('dadmin.style')
 @include('dadmin.script')

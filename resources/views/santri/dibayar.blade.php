@@ -48,11 +48,15 @@
                     </tbody>
                 </table>
             </div>
+            @if($isPaginated)
             <nav aria-label="Page navigation example">
                 <div>
                     {{ $paidTagihan->onEachSide(1)->links('pagination::bootstrap-5', ['size' => 'sm']) }}
                 </div>
             </nav>
+            @else
+            <p>No tagihan available.</p> <!-- Jika tidak ada tagihan, tampilkan pesan ini -->
+            @endif
         </div>
     </div>
 </div>

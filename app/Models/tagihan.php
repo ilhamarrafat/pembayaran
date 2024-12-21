@@ -18,6 +18,7 @@ class Tagihan extends Model
         'nama_tagihan',
         'nominal_tagihan',
         'waktu_tagihan',
+        'periode_tagihan',
         'id_transaksi'
     ];
     protected $dates = [

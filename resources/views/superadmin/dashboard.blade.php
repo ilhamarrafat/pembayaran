@@ -3,150 +3,141 @@
 
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
-        <aside class="main-sidebar sidebar-dark-primary mb-20">
-            <!-- Brand Logo -->
-            <a href="index3.html" class="brand-link">
-                <img src="{{asset('template/assets/img/logo.png')}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <!-- Sidebar -->
+        <aside class="main-sidebar sidebar-dark-primary">
+            <a href="{{ url('/') }}" class="brand-link">
+                <img src="{{ asset('template/assets/img/logo.png') }}" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">Dashboard</span>
             </a>
-
-            <!-- Sidebar -->
             <div class="sidebar">
-                <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                    @if(Auth::user()->admin && Auth::user()->admin->foto)
-                    <img src="{{ asset('profile/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
-                    @else
-                    <img src="{{ asset('profile/default.jpg') }}" class="img-circle elevation-2" alt="Default User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
-                    @endif
+                    <div class="image">
+                        <img src="{{ url('profile/' . Auth::user()->admin->foto) }}" class="img-circle elevation-2" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: top;">
+                    </div>
                     <div class="info">
-                        <a>Hello,
-                            <a>{{ Auth::user()->name }}</a>
-                        </a>
+                        <a>Hello, <strong>{{ Auth::user()->name }}</strong></a>
                     </div>
                 </div>
-                <!-- Sidebar Menu -->
-                @include('superadmin.sidebar')
-                <!-- /.sidebar-menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" role="menu" data-accordion="false">
+                        <li class="nav-item">
+                            <a href="{{ url('dashboard/superadmin') }}" class="nav-link active">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('pembayaran.index') }}" class="nav-link">
+                                <i class='nav-icon fas fa-wallet'></i>
+                                <p>Pembayaran</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('berita') }}" class="nav-link">
+                                <i class="nav-icon fa fa-newspaper-o"></i>
+                                <p>Berita</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('profile') }}" class="nav-link">
+                                <i class="nav-icon far fa-address-card"></i>
+                                <p>Profile</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('data') }}" class="nav-link">
+                                <i class="nav-icon fas fa-database"></i>
+                                <p>Data</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('logout') }}" class="nav-link" onclick="confirmLogout(event);">
+                                <i class="nav-icon fa fa-sign-out"></i>
+                                <p>Logout</p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-            <!-- /.sidebar -->
         </aside>
-        <!-- Preloader -->
-        <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__wobble" src="{{asset('template/assets/img/logo.png')}}" alt="" height="60" width="60">
-        </div>
-        <!-- Content Wrapper. Contains page content -->
+
+        <!-- Content -->
         <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
-            <div class="content-header">
-                @yield('content')
+            <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Dashboard</h1>
-                        </div><!-- /.col -->
+                            <h1>Dashboard</h1>
+                        </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="#">Home</a></li>
                                 <li class="breadcrumb-item active">Dashboard</li>
                             </ol>
-                        </div><!-- /.col -->
-                    </div><!-- /.row -->
-                </div><!-- /.container-fluid -->
-            </div>
-            <!-- /.content-header -->
-            <!-- Main content -->
+                        </div>
+                    </div>
+                </div>
+            </section>
             <section class="content">
-
                 <div class="container-fluid">
-                    <!-- Info boxes -->
                     <div class="row">
-                        <!-- /.col -->
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box mb-3">
-                                <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+                        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                            <div class="info-box bg-warning">
+                                <span class="info-box-icon"><i class="fas fa-users"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Santri</span>
-                                    <span class="info-box-number">{{count($santri)}}</span>
-
+                                    <span class="info-box-number">{{ count($santri) }}</span>
                                 </div>
-                                <!-- /.info-box-content -->
                             </div>
-                            <!-- /.info-box -->
                         </div>
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box">
-                                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-calendar-alt"></i></span>
+                        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                            <div class="info-box bg-info">
+                                <span class="info-box-icon"><i class="fas fa-calendar-alt"></i></span>
                                 <div class="info-box-content">
-                                    <span class="info-box-text">Pemasukan bulan ini</span>
-                                    <span class="info-box-number">
-                                        10
-                                    </span>
+                                    <span class="info-box-text">Pemasukan Bulan Ini</span>
+                                    <span class="info-box-number">Rp{{ number_format($pemasukanBulanIni, 0, ',', '.') }}</span>
                                 </div>
-                                <!-- /.info-box-content -->
                             </div>
-                            <!-- /.info-box -->
                         </div>
-
-                        <!-- /.col -->
-
-                        <!-- fix for small devices only -->
-                        <div class="clearfix hidden-md-up"></div>
-
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box mb-3">
-                                <span class="info-box-icon bg-success elevation-1"><i class="fa fa-bar-chart"></i></span>
-
+                        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                            <div class="info-box bg-success">
+                                <span class="info-box-icon"><i class="fa fa-bar-chart"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Saldo</span>
-                                    <span class="info-box-number">760</span>
+                                    <span class="info-box-number">Rp{{ number_format($totalPembayaran, 0, ',', '.') }}</span>
                                 </div>
-                                <!-- /.info-box-content -->
                             </div>
-                            <!-- /.info-box -->
                         </div>
-                        <!-- /.col -->
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box mb-3">
-                                <span class="info-box-icon bg-danger elevation-1"><i class="fa fa-area-chart"></i></span>
-
+                        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                            <div class="info-box bg-danger">
+                                <span class="info-box-icon"><i class="fa fa-area-chart"></i></span>
                                 <div class="info-box-content">
-                                    <span class="info-box-text">Pengeluaran</span>
-                                    <span class="info-box-number">41,410</span>
+                                    <span class="info-box-text">Tagihan</span>
+                                    <span class="info-box-number">Rp{{ number_format($totalTagihanBelumDibayar, 0, ',', '.') }}</span>
                                 </div>
-                                <!-- /.info-box-content -->
                             </div>
-                            <!-- /.info-box -->
                         </div>
-                        <!-- /.col -->
                     </div>
-                    <!-- /.row -->
-
-                </div><!--/. container-fluid -->
-            </section>
-            <!-- /.content -->
-            <!-- /.content -->
-        </div>
-        <!-- /.content-wrapper -->
-        <!-- Main Footer -->
-        <footer class="main-footer">
-            <div class="container copyright text-center mt-4">
-                <p>© <span>Copyright</span> <strong class="px-1 sitename">Admin</strong> <span>All Rights Reserved</span></p>
-                <div class="credits">
-                    Designed by <a>Admin</a>
                 </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer class="main-footer text-center">
+            <div>
+                <p>&copy; 2024 <strong>MAWAR</strong> All Rights Reserved. Designed by <a href="#">Admin</a></p>
             </div>
         </footer>
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-            <!-- Control sidebar content goes here -->
-        </aside>
-        <!-- /.control-sidebar -->
     </div>
-    <!-- ./wrapper -->
 
     @include('dadmin.script')
 </body>
 
-@include('dadmin.style')
-@include('dadmin.script')
+<script>
+    function confirmLogout(event) {
+        event.preventDefault();
+        if (confirm('Apakah Anda yakin ingin keluar?')) {
+            window.location.href = "{{ route('logout') }}";
+        }
+    }
+</script>
